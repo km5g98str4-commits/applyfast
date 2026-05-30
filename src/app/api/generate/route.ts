@@ -37,8 +37,8 @@ Return ONLY valid JSON. No markdown, no code blocks.
   "whyThisRole": "2-3 punchy personalized sentences using the ACTUAL company name and role title. Reference specific CV experience that matches this role.",
   "coverLetterSnippet": "4-5 sentences. Starts with 'Dear [company] hiring team,'. Mentions 2 specific CV achievements mapped to the role.",
   "strengths": ["3-5 strengths for this exact role"],
-  "companyName": "from job description",
-  "roleTitle": "from job description",
+  "companyName": "Company name from job description. If no company name is found, use empty string '' — do NOT guess or invent.",
+  "roleTitle": "from job description. If no role title is found, use empty string '' — do NOT guess or invent.",
   "atsAnalysis": {
     "matchScore": "0-100 number based on keyword + experience overlap",
     "matchedKeywords": ["matched keywords from CV found in JD"],
@@ -52,7 +52,7 @@ Return ONLY valid JSON. No markdown, no code blocks.
   },
   "companyDeepDive": "3-5 bullet points about the company using • separator. Real info: what they do, funding, culture.",
   "sniperBullets": ["exactly 3. Format: '[CV proof] → [role requirement] → [impact]'. Under 150 chars each."],
-  "quantifiedAchievements": ["3-5 CV bullets rewritten with specific numbers. Estimate realistic metrics if CV is vague."],
+  "quantifiedAchievements": ["3-5 CV bullets rewritten with specific numbers FROM the CV. If CV has no numbers, use the bullet as-is with minor polish — never insert made-up metrics."],
   "experienceMapping": [
     {"cvExperience": "one CV bullet", "jobRequirement": "matching JD requirement", "connection": "one sentence why it matters"}
   ],
@@ -78,9 +78,9 @@ Return ONLY valid JSON. No markdown, no code blocks.
 }
 
 CRITICAL RULES:
-1. Use ACTUAL company and role names. NEVER "this company" or "the role".
-2. Reference SPECIFIC CV details — real projects, companies, metrics.
-3. Quantify everything. Estimate reasonable numbers if CV is vague.
+1. Use ACTUAL company and role names from the JD. If company name is not found in JD, use "Hiring Team" or "your team" as greeting — NEVER invent a company name or write "your fintech company", "your SaaS company", "your company", or any fabricated descriptor.
+2. ONLY use facts explicitly present in the pasted CV. If a field is missing from the CV (name, email, phone, experience, skills, etc.), output "unknown" or empty — NEVER invent, guess, or fabricate. No made-up numbers, certifications, employer names, or dates.
+3. Quantify when possible using numbers FROM the CV.
 4. Be honest. Don't fabricate skills. Bridge gaps creatively.
 5. companyDeepDive: 3-5 bullets with • separator. Real info.
 6. sniperBullets: EXACTLY 3 items, under 150 chars each.
