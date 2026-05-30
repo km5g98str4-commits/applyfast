@@ -1,300 +1,154 @@
-// Local API route - runs on laptop, NEVER deployed with keys
-// DeepSeek is cheaper and runs locally only
-
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
-const DEEPSEEK_BASE_URL = "https://api.deepseek.com/v1";
+const DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions";
+const MODEL = "deepseek-chat";
 
-// Simple in-memory rate limiting (resets on restart)
-const usageStore: Record<string, number> = {};
+export const runtime = "edge";
 
-function getUsageKey(ip: string): string {
-  const today = new Date().toISOString().split("T")[0];
-  return `${ip}-${today}`;
+export async function POST(req: NextRequest) {
+  const startTime = Date.now();
+
+  if (!DEEPSEEK_API_KEY) {
+    return NextResponse.json({ success: false, error: "API key not configured" }, { status: 500 });
+  }
+
+  try {
+    const body = await req.json();
+    const { cv, jobDescription, toneMode = "professional" } = body;
+
+    if (!cv || !jobDescription) {
+      return NextResponse.json({ success: false, error: "CV and job description are required" }, { status: 400 });
+    }
+
+    const systemPrompt = `You are ApplyFast AI — a job application assistant producing SPECIFIC output with real company/role names. Never use placeholders. Reference actual CV details.
+
+Return ONLY valid JSON. No markdown, no code blocks.
+
+{
+  "fullName": "from CV",
+  "email": "from CV",
+  "phone": "from CV",
+  "location": "from CV",
+  "currentTitle": "string",
+  "yearsOfExperience": integer,
+  "education": "string",
+  "skills": ["strings", "max 10"],
+  "whyThisRole": "2-3 punchy personalized sentences using the ACTUAL company name and role title. Reference specific CV experience that matches this role.",
+  "coverLetterSnippet": "4-5 sentences. Starts with 'Dear [company] hiring team,'. Mentions 2 specific CV achievements mapped to the role.",
+  "strengths": ["3-5 strengths for this exact role"],
+  "companyName": "from job description",
+  "roleTitle": "from job description",
+  "atsAnalysis": {
+    "matchScore": "0-100 number based on keyword + experience overlap",
+    "matchedKeywords": ["matched keywords from CV found in JD"],
+    "missingKeywords": [{"keyword": "string", "reframeSuggestion": "honest bridge using existing CV experience"}]
+  },
+  "jobAnalysis": {
+    "salaryRange": "estimated range with numbers",
+    "companySize": "estimated size/stage",
+    "techStack": ["deduced from JD"],
+    "workMode": "remote|hybrid|onsite"
+  },
+  "companyDeepDive": "3-5 bullet points about the company using • separator. Real info: what they do, funding, culture.",
+  "sniperBullets": ["exactly 3. Format: '[CV proof] → [role requirement] → [impact]'. Under 150 chars each."],
+  "quantifiedAchievements": ["3-5 CV bullets rewritten with specific numbers. Estimate realistic metrics if CV is vague."],
+  "experienceMapping": [
+    {"cvExperience": "one CV bullet", "jobRequirement": "matching JD requirement", "connection": "one sentence why it matters"}
+  ],
+  "skillGaps": [
+    {"skill": "missing skill", "criticality": "high|medium|low", "learningPath": "specific course/platform suggestion"}
+  ],
+  "interviewPrep": [
+    {"question": "role-specific question based on JD", "hint": "what to mention using real CV details"}
+  ],
+  "customQuestions": [
+    {"question": "behavioral/technical question", "answer": "auto-generated using real CV context"}
+  ],
+  "starStories": [
+    {"title": "short name", "situation": "context", "task": "what needed doing", "action": "specific actions", "result": "quantified outcome"}
+  ],
+  "followUpEmail": {
+    "subject": "follow-up subject line with company name",
+    "body": "full email. Professional, references company and candidate's specific value."
+  },
+  "whyThisRoleAr": "Arabic translation of whyThisRole",
+  "coverLetterSnippetAr": "Arabic translation of coverLetterSnippet",
+  "strengthsAr": ["Arabic strengths"]
 }
 
-async function callAI(
-  model: string,
-  messages: any[],
-  responseFormat?: any
-): Promise<string> {
-  if (DEEPSEEK_API_KEY) {
-    const res = await fetch(`${DEEPSEEK_BASE_URL}/chat/completions`, {
+CRITICAL RULES:
+1. Use ACTUAL company and role names. NEVER "this company" or "the role".
+2. Reference SPECIFIC CV details — real projects, companies, metrics.
+3. Quantify everything. Estimate reasonable numbers if CV is vague.
+4. Be honest. Don't fabricate skills. Bridge gaps creatively.
+5. companyDeepDive: 3-5 bullets with • separator. Real info.
+6. sniperBullets: EXACTLY 3 items, under 150 chars each.
+7. interviewPrep: EXACTLY 5 questions.
+8. customQuestions: EXACTLY 4 questions with answers.
+9. starStories: EXACTLY 3 stories.
+10. experienceMapping: at least 5 entries if CV has 5+ bullets.
+11. Output language: ${toneMode} tone.`;
+
+    const response = await fetch(DEEPSEEK_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
       },
       body: JSON.stringify({
-        model,
-        messages,
+        model: MODEL,
+        messages: [
+          { role: "system", content: systemPrompt },
+          {
+            role: "user",
+            content: `CV:\n${cv.slice(0, 2500)}\n\n---\n\nJob Description:\n${jobDescription.slice(0, 2000)}\n\nGenerate the JSON. Output ONLY the JSON object, no explanation.`,
+          },
+        ],
         temperature: 0.3,
-        max_tokens: 8000,
-        ...(responseFormat ? { response_format: responseFormat } : {}),
+        max_tokens: 3500,
+        stream: false,
       }),
     });
 
-    if (res.ok) {
-      const json = await res.json();
-      return json.choices[0]?.message?.content || "";
-    }
-
-    if (process.env.OPENAI_API_KEY) {
-      console.log("DeepSeek failed, falling back to OpenAI");
-    } else {
-      throw new Error(`DeepSeek API error: ${res.status}`);
-    }
-  }
-
-  if (process.env.OPENAI_API_KEY) {
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages,
-        temperature: 0.3,
-        max_tokens: 8000,
-        ...(responseFormat ? { response_format: responseFormat } : {}),
-      }),
-    });
-
-    if (!res.ok) throw new Error(`OpenAI API error: ${res.status}`);
-    const json = await res.json();
-    return json.choices[0]?.message?.content || "";
-  }
-
-  throw new Error("No API keys configured");
-}
-
-export async function POST(req: Request) {
-  try {
-    const { cv, jobLink, jobDescription, tone } = await req.json();
-
-    if (!cv || (!jobLink && !jobDescription)) {
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => "");
+      console.error("DeepSeek API error:", response.status, errorText);
       return NextResponse.json(
-        { error: "Missing CV or job description" },
-        { status: 400 }
+        { success: false, error: `AI service error (${response.status}). Please try again.` },
+        { status: 502 }
       );
     }
 
-    const toneMode = tone || "professional";
-
-    // Rate limiting: 3 free per day per IP
-    const ip =
-      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      req.headers.get("x-real-ip") ||
-      "unknown";
-    const key = getUsageKey(ip);
-    usageStore[key] = (usageStore[key] || 0) + 1;
-
-    if (usageStore[key] > 3) {
-      return NextResponse.json(
-        {
-          error: "FREE_LIMIT",
-          message:
-            "You've used your 3 free applications today. Support us with $3 for unlimited access (IBAN payment).",
-          used: usageStore[key],
-        },
-        { status: 402 }
-      );
-    }
-
-    const systemPrompt = `You are ApplyFast AI — the world's best job application assistant. You produce output so specific and compelling that recruiters genuinely believe the candidate wrote it themselves after hours of research.
-
-Given a CV and job description, you generate a comprehensive JSON response that covers EVERYTHING a candidate needs to apply, prepare, and follow up.
-
-## TONE MODE
-The output tone should be: "${toneMode}" (professional | casual | startup | corporate).
-
-## OUTPUT STRUCTURE — Return ONLY valid JSON with ALL of these fields:
-
-{
-  // === TIER 1: Core Application Fields ===
-  "fullName": "string — extract from CV, N/A if missing",
-  "email": "string — extract from CV, N/A if missing",
-  "phone": "string — extract from CV, N/A if missing",
-  "location": "string — extract from CV, N/A if missing",
-  "linkedin": "string or ''",
-  "currentTitle": "string",
-  "yearsOfExperience": "integer",
-  "education": "string",
-  "skills": ["string array — ALL skills from CV, max 20"],
-  "whyThisRole": {
-    "concise": "string — 1-2 punchy sentences mentioning company and role by name",
-    "detailed": "string — 3-4 detailed sentences with specific CV-to-role connections",
-    "enthusiastic": "string — 2-3 energetic sentences with excitement"
-  },
-  "coverLetterSnippet": {
-    "concise": "string — 2 sentences",
-    "detailed": "string — 4-5 sentences with examples from CV",
-    "enthusiastic": "string — 3 sentences with energy"
-  },
-  "strengths": ["string array — 3-5 top strengths for this role"],
-  "salaryExpectation": "string",
-  "availableStartDate": "string",
-  "workAuthorization": "string",
-  "companyName": "string — extract from job description",
-  "roleTitle": "string — extract from job description",
-
-  // === TIER 1 #1-2: ATS Analysis ===
-  "atsAnalysis": {
-    "matchScore": "number 0-100 — honest keyword + experience + education overlap",
-    "matchedKeywords": ["keyword1", "keyword2", ...],
-    "missingKeywords": [
-      {
-        "keyword": "string",
-        "reframeSuggestion": "string — honest way to bridge gap using EXISTING CV experience. Never fabricate."
-      }
-    ]
-  },
-
-  // === TIER 1 #6: Job Description Analysis ===
-  "jobAnalysis": {
-    "salaryRange": "string — estimate from job description or market rate for role/company/location. Be specific with numbers.",
-    "companySize": "string — employee count or stage (e.g., 'Series D, 500-800 employees, $250M raised')",
-    "techStack": ["string array — deduce the likely tech stack from the job description"],
-    "workMode": "string — remote | hybrid | onsite (extract from JD)",
-    "industry": "string — fintech, e-commerce, healthtech, etc."
-  },
-
-  // === TIER 2 #7: Company Deep Dive ===
-  "companyDeepDive": {
-    "summary": "string — 3-5 bullet points using • separator. Cover: what they do, recent funding/news, company culture/vibe, main competitors, why someone would want to work there. Be specific with real data. Use real company names."
-  },
-
-  // === TIER 2 #8: Experience-to-Role Mapper ===
-  "experienceMapping": [
-    {
-      "cvExperience": "string — one specific bullet/achievement from the CV",
-      "jobRequirement": "string — the specific job requirement it maps to",
-      "connection": "string — one sentence explaining WHY this experience matters for this role"
-    }
-  ],
-
-  // === TIER 2 #9: Sniper Bullets (Why You?) ===
-  "sniperBullets": [
-    "string — format: '[CV proof] → [role requirement] → [quantified impact]'. Exactly 3 bullets. Ultra-specific. A recruiter scanning for 5 seconds should say 'wow, this person is EXACTLY what we need.'"
-  ],
-
-  // === TIER 2 #10: Quantified Achievements ===
-  "quantifiedAchievements": [
-    "string — each is a rewrite of a CV bullet with SPECIFIC NUMBERS and METRICS. Convert 'built microservice' to 'built microservice handling 500K+ daily requests, reducing p99 latency by 40%'. Use numbers from the CV whenever possible. Estimate reasonable numbers when CV is vague. Make every bullet quantifiable."
-  ],
-
-  // === TIER 2 #11: Skill Gap Analysis ===
-  "skillGaps": [
-    {
-      "skill": "string — skill/job requirement missing from CV",
-      "criticality": "high | medium | low — how important this gap is for THIS specific role",
-      "learningPath": "string — specific course/certification/project suggestion to close this gap (real course names, real platforms)"
-    }
-  ],
-
-  // === TIER 2 #12: Interview Prep ===
-  "interviewPrep": [
-    {
-      "question": "string — role-specific interview question based on the job description",
-      "hint": "string — what to mention in your answer, referencing specific CV experience. Not generic — tailored to THIS candidate for THIS role."
-    }
-  ],
-
-  // === TIER 3 #14: Custom Question Answerer ===
-  "customQuestions": [
-    {
-      "question": "string — a behavioral/technical question this employer likely asks",
-      "answer": "string — auto-generated answer using CV context. Specific, not generic. Mentions real projects and companies from CV."
-    }
-  ],
-
-  // === TIER 3 #15: STAR Stories ===
-  "starStories": [
-    {
-      "title": "string — short name for this story",
-      "situation": "string — context/background",
-      "task": "string — what needed to be done",
-      "action": "string — specific actions the candidate took",
-      "result": "string — quantified outcome"
-    }
-  ],
-
-  // === TIER 3 #17: Role Comparison ===
-  "roleComparison": "string — paragraph comparing candidate's current/most recent role to this target role. Career progression narrative: what's the step up? What new challenges? Salary trajectory? Be specific about company/role names.",
-
-  // === TIER 3 #19: Smart Follow-Up ===
-  "followUpEmail": {
-    "subject": "string — email subject line for following up after 1 week of no response",
-    "body": "string — full email body. Professional, not desperate. References the company name and role. Reminds them of the candidate's specific value. Includes a call to action."
-  },
-
-  // === TIER 3 #4: Arabic Localization ===
-  "whyThisRoleAr": "string — Arabic translation of whyThisRole.concise",
-  "coverLetterSnippetAr": "string — Arabic translation of coverLetterSnippet.concise",
-  "strengthsAr": ["string array — Arabic translations of strengths"]
-}
-
-## CRITICAL RULES — VIOLATE THESE AND THE OUTPUT IS USELESS:
-
-1. EVERY text field MUST use the ACTUAL company name and role title extracted from the job description. Never write "this company", "your organization", "the role", "[Company Name]", or any placeholder. If the JD says "Tabby", write "Tabby". If it says "Staff Backend Engineer", write "Staff Backend Engineer".
-
-2. EVERY answer MUST reference SPECIFIC details from the CV — real projects, real metrics, real companies the candidate worked at. No generic "I have experience with distributed systems" — write "At Careem, I built Go microservices handling 500K+ daily requests."
-
-3. QUANTIFY aggressively. Convert every vague claim to a number. If the CV says "built microservices", estimate based on context: "built 12 production microservices." If the CV says "handled payment processing", write "processed SAR 50M+ monthly in payment transactions."
-
-4. BE HONEST in gap analysis. Don't pretend the candidate has skills they don't. But DO find creative, honest ways to connect adjacent experience.
-
-5. The output MUST be parseable JSON. No markdown wrappers, no trailing commas, no comments in the JSON.
-
-6. For companyDeepDive, use REAL publicly available information about the company when possible.
-
-7. experienceMapping must have at least 5 entries if the CV has 5+ experience bullets.
-
-8. sniperBullets must be EXACTLY 3 items. Each must be under 150 characters but pack maximum punch.
-
-9. interviewPrep must be EXACTLY 5 questions. Not generic "tell me about yourself" — questions specific to THIS role's technical stack and domain.
-
-10. customQuestions must be EXACTLY 4 questions with answers. Behavioral + technical mix.
-
-11. starStories must be EXACTLY 3 stories drawn from DIFFERENT roles in the CV.`;
-
-    const jobText =
-      jobDescription ||
-      `Job URL: ${jobLink}\n(Analyze based on common job requirements for this type of role)`;
-
-    const userPrompt = `CV:\n${cv}\n\nJob Description:\n${jobText}\n\nIMPORTANT: Generate ALL output in English. Then, provide Arabic translations for: whyThisRole.concise (add as "whyThisRoleAr"), coverLetterSnippet.concise (add as "coverLetterSnippetAr"), and strengths array (add as "strengthsAr"). Use professional Arabic for Gulf/MENA market.\n\nGenerate the FULL JSON with ALL fields specified in the system prompt. Do NOT skip any field. Do NOT use placeholders. Use real names, real numbers, real specifics from the CV and job description.`;
-
-    const content = await callAI(
-      "deepseek-chat",
-      [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      { type: "json_object" }
-    );
+    const result = await response.json();
+    const content = result.choices?.[0]?.message?.content;
 
     if (!content) {
-      return NextResponse.json(
-        { error: "AI generation failed" },
-        { status: 500 }
-      );
+      console.error("Empty DeepSeek response:", JSON.stringify(result).slice(0, 500));
+      return NextResponse.json({ success: false, error: "Empty AI response" }, { status: 500 });
     }
 
-    const result = JSON.parse(content);
+    let parsed: any;
+    try {
+      const cleaned = content.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
+      parsed = JSON.parse(cleaned);
+    } catch {
+      console.error("Failed to parse DeepSeek output:", content.slice(0, 500));
+      return NextResponse.json({ success: false, error: "Invalid AI output format" }, { status: 500 });
+    }
+
+    const latency = ((Date.now() - startTime) / 1000).toFixed(1);
+    console.log(`Generate completed in ${latency}s`);
 
     return NextResponse.json({
       success: true,
-      data: result,
-      remaining: Math.max(0, 3 - usageStore[key]),
-      usage: usageStore[key],
+      data: parsed,
+      latency: `${latency}s`,
     });
   } catch (error: any) {
-    console.error("ApplyFast API error:", error.message);
+    console.error("Generate error:", error?.message || error);
     return NextResponse.json(
-      { error: "Generation failed", detail: error.message },
+      { success: false, error: error?.message || "Internal server error" },
       { status: 500 }
     );
   }
