@@ -145,8 +145,10 @@ export default function Home() {
       } else {
         toast.success(`Generated! ${data.remaining} free applications left.`);
       }
-    } catch (err) {
-      toast.error("Network error. Please try again.");
+    } catch (err: any) {
+      const msg = err?.message || String(err);
+      console.error("Generate error:", msg);
+      toast.error(msg || "Network error. Please try again.");
     } finally {
       setLoading(false);
     }
