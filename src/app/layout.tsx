@@ -37,12 +37,21 @@ export const metadata: Metadata = {
     url: "https://applyfast-chi.vercel.app",
     siteName: "ApplyFast AI",
     type: "website",
+    images: [
+      {
+        url: "https://applyfast-chi.vercel.app/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "ApplyFast AI — Auto-Fill Job Applications",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "ApplyFast AI — Auto-Fill Job Applications",
     description:
       "Paste CV + job link → AI fills everything. 30 mins saved per app.",
+    images: ["https://applyfast-chi.vercel.app/og-image.png"],
   },
   robots: {
     index: true,
