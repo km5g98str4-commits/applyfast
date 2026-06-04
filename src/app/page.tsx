@@ -68,6 +68,9 @@ export default function Home() {
   const [result, setResult] = useState<GeneratedData | null>(null);
   const [remaining, setRemaining] = useState<number | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+  const [licenseKey, setLicenseKey] = useState<string>("");
+  const [licenseValid, setLicenseValid] = useState(false);
+  const [licenseChecking, setLicenseChecking] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
 
   const loadDemo = () => {
@@ -79,6 +82,31 @@ export default function Home() {
       "Stripe is looking for a Senior Fullstack Engineer to join our Payments team. You'll design and build APIs and UIs that power millions of businesses. Requirements: 5+ years experience, React, TypeScript, Node.js, PostgreSQL. Nice to have: AWS, leadership experience. We value clear communication and user empathy."
     );
     toast.success("Demo CV + job loaded! Scroll down and click Generate.");
+  };
+
+  const handleValidateLicense = async () => {
+    if (!licenseKey.trim()) return;
+    setLicenseChecking(true);
+    try {
+      const res = await fetch("/api/license/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ license_key: licenseKey.trim() }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        setLicenseValid(true);
+        setRemaining(data.credits);
+        toast.success(`License activated! ${data.credits} credits available.`);
+      } else {
+        setLicenseValid(false);
+        toast.error(data.error || "Invalid license key");
+      }
+    } catch {
+      toast.error("Failed to validate license");
+    } finally {
+      setLicenseChecking(false);
+    }
   };
 
   const handleGenerate = async () => {
@@ -95,7 +123,11 @@ export default function Home() {
     setResult(null);
 
     try {
-      const body = JSON.stringify({ cv, jobLink, jobDescription });
+      const body = JSON.stringify({
+        cv,
+        jobDescription,
+        licenseKey: licenseValid ? licenseKey.trim() : undefined,
+      });
       let res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -983,7 +1015,10 @@ export default function Home() {
           <p className="text-sm text-white/40 mb-6">Or $9 for 5 applications (save 40%)</p>
 
           <div className="space-y-3 max-w-md mx-auto">
-            <div className="p-4 glass-card rounded-xl cursor-pointer hover:border-emerald-500/30 transition-colors">
+            <a
+              href={`https://applyfast.lemonsqueezy.com/checkout?embed=1`}
+              className="lemonsqueezy-button block p-4 glass-card rounded-xl cursor-pointer hover:border-emerald-500/30 transition-colors no-underline"
+            >
               <div className="flex items-center justify-between">
                 <div className="text-left">
                   <p className="text-white font-semibold">1 Application</p>
@@ -993,9 +1028,12 @@ export default function Home() {
                   One-time
                 </span>
               </div>
-            </div>
+            </a>
 
-            <div className="p-4 glass-card rounded-xl cursor-pointer hover:border-emerald-500/30 transition-colors relative overflow-hidden">
+            <a
+              href="https://applyfast.lemonsqueezy.com/checkout?embed=1"
+              className="lemonsqueezy-button block p-4 glass-card rounded-xl cursor-pointer hover:border-emerald-500/30 transition-colors relative overflow-hidden no-underline"
+            >
               <div className="absolute top-0 right-0 bg-emerald-500 text-[#0a0f0e] text-xs font-bold px-2 py-0.5 rounded-bl-lg">
                 Best Value
               </div>
@@ -1011,18 +1049,41 @@ export default function Home() {
                   Save 40%
                 </span>
               </div>
-            </div>
+            </a>
           </div>
 
           <div className="mt-8 p-4 bg-white/[0.03] rounded-xl border border-white/5">
-            <p className="text-sm text-white/40 mb-2">To pay, send the amount via:</p>
-            <div className="bg-white/5 rounded-md p-3 font-mono text-white/60 text-sm break-all select-all">
-              IBAN: SA6478000000001065324365
+            <p className="text-sm text-white/40 mb-3">Already purchased? Paste your license key:</p>
+            <div className="flex gap-2">
+              <Input
+                value={licenseKey}
+                onChange={(e) => {
+                  setLicenseKey(e.target.value);
+                  setLicenseValid(false);
+                }}
+                onKeyDown={(e) => { if (e.key === "Enter") handleValidateLicense(); }}
+                placeholder="Paste license key here..."
+                className="flex-1 bg-white/5 border-white/10 text-white placeholder:text-white/20"
+              />
+              <Button
+                onClick={handleValidateLicense}
+                disabled={licenseChecking || !licenseKey.trim()}
+                className="bg-emerald-600 hover:bg-emerald-500 text-white"
+              >
+                {licenseChecking ? <Loader2 className="w-4 h-4 animate-spin" /> : "Activate"}
+              </Button>
             </div>
-            <p className="text-xs text-white/30 mt-2">
-              STC Bank &middot; After payment, email the receipt to activate your credits.
-            </p>
+            {licenseValid && (
+              <p className="text-sm text-emerald-400 mt-2 flex items-center gap-1 justify-center">
+                <CheckCircle2 className="w-3 h-3" />
+                License active — {remaining !== null ? `${remaining} credits remaining` : "Unlimited"}
+              </p>
+            )}
           </div>
+
+          <p className="text-xs text-white/25 mt-4">
+            Powered by Lemon Squeezy &middot; Secure checkout &middot; Instant delivery
+          </p>
         </Card>
       </div>
     </main>

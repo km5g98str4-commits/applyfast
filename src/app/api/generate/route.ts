@@ -6,6 +6,27 @@ const MODEL = "deepseek-chat";
 
 export const runtime = "edge";
 
+// Credit check before generating
+async function checkCredits(licenseKey: string | undefined, ip: string): Promise<{ allowed: boolean; error?: string; used?: number; remaining?: number }> {
+  try {
+    const baseUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+
+    const res = await fetch(`${baseUrl}/api/license/consume`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ license_key: licenseKey || null }),
+    });
+
+    if (!res.ok) return { allowed: false, error: "Credit check failed" };
+    return await res.json();
+  } catch {
+    // If credit service is down, fall back to free tier check
+    return { allowed: true, remaining: 0 };
+  }
+}
+
 export async function POST(req: NextRequest) {
   const startTime = Date.now();
 
@@ -15,10 +36,26 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { cv, jobDescription, toneMode = "professional" } = body;
+    const { cv, jobDescription, toneMode = "professional", licenseKey } = body;
 
     if (!cv || !jobDescription) {
       return NextResponse.json({ success: false, error: "CV and job description are required" }, { status: 400 });
+    }
+
+    // Credit check
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const creditCheck = await checkCredits(licenseKey, ip);
+
+    if (!creditCheck.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: creditCheck.error || "No credits remaining. Purchase more to continue.",
+          noCredits: true,
+          remaining: creditCheck.remaining ?? 0,
+        },
+        { status: 402 }
+      );
     }
 
     const systemPrompt = `You are ApplyFast AI — a job application assistant producing SPECIFIC output with real company/role names. Never use placeholders. Reference actual CV details.
@@ -144,6 +181,7 @@ CRITICAL RULES:
       success: true,
       data: parsed,
       latency: `${latency}s`,
+      remaining: creditCheck.remaining,
     });
   } catch (error: any) {
     console.error("Generate error:", error?.message || error);
