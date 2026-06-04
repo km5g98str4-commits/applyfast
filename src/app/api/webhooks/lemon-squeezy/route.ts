@@ -71,10 +71,22 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ received: true, skipped: "wrong_store" });
       }
 
+      // Duplicate webhook guard: mark as processed
+      const processedKey = `webhook:processed:${eventName}:${licenseData?.id || licenseKey}`;
+      const alreadyProcessed = await redis.get<number>(processedKey);
+      if (alreadyProcessed) {
+        console.log(`Duplicate ${eventName} for key ${licenseKey.slice(0, 8)}..., skipping`);
+        return NextResponse.json({ received: true, skipped: "duplicate" });
+      }
+
       const pack = CREDIT_PACKS[variantId];
       const credits = pack?.credits ?? 1; // Default to 1 if variant unknown
 
-      await redis.set(getCreditsKey(licenseKey), credits);
+      // Atomically seed credits + mark processed (30-day TTL on dedup)
+      await Promise.all([
+        redis.set(getCreditsKey(licenseKey), credits),
+        redis.set(processedKey, 1, { ex: 2592000 }),
+      ]);
       console.log(
         `Credits granted: ${credits} for key ${licenseKey.slice(0, 8)}... (variant ${variantId})`
       );
