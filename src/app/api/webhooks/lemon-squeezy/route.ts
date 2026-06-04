@@ -95,6 +95,15 @@ export async function POST(req: NextRequest) {
     }
 
     // All other events: acknowledge
+    if (eventName === "order_refunded") {
+      const refund = payload.data;
+      const orderId = refund?.attributes?.order_id;
+      console.log(`Refund processed for order #${orderId}, scrubbing credits if known`);
+      // Credit clawback is best-effort — we don't have order→key mapping without a DB
+      // Log for manual review; future: lookup key via LS API
+      return NextResponse.json({ received: true, event: "order_refunded", note: "manual review required" });
+    }
+
     return NextResponse.json({ received: true, event: eventName });
   } catch (error: any) {
     console.error("Webhook processing error:", error);
