@@ -48,25 +48,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ valid: false, error: "Key not for this product" }, { status: 400 });
     }
 
-    // Step 3: Look up credit balance from Redis
+    // Step 3: Look up / seed credit balance
     const creditsKey = getCreditsKey(license_key);
-    const balance = await redis.get<number>(creditsKey);
-
-    // If balance doesn't exist yet (webhook hasn't fired or first use),
-    // check if this key maps to a known variant
+    const redeemedKey = `redeemed:${license_key}`;
     const variantId = meta?.variant_id ? String(meta.variant_id) : null;
     const pack = variantId ? CREDIT_PACKS[variantId] : null;
 
-    // Initialize credits if not set (should have been set by webhook)
+    // Check existing balance (set by webhook or prior redemption)
+    let balance = await redis.get<number>(creditsKey);
+
     if (balance === null && pack) {
+      // Webhook hasn't fired yet — atomically claim this key once
+      const alreadyRedeemed = await redis.get<number>(redeemedKey);
+      if (alreadyRedeemed) {
+        return NextResponse.json({
+          valid: false,
+          error: "This license key has already been activated. Use a new key for additional credits.",
+        }, { status: 400 });
+      }
+
+      await redis.set(redeemedKey, 1);
       await redis.set(creditsKey, pack.credits);
-      return NextResponse.json({
-        valid: true,
-        credits: pack.credits,
-        totalGranted: pack.credits,
-        pack: pack.name,
-        email: meta?.customer_email || null,
-      });
+      balance = pack.credits;
     }
 
     return NextResponse.json({
