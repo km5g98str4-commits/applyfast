@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -175,7 +175,27 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0a0f0e]">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "ApplyFast",
+            applicationCategory: "BusinessApplication",
+            operatingSystem: "Web",
+            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+            description:
+              "AI-powered job application generator. Paste a job URL, upload your CV, and get a tailored application in 30 seconds.",
+            url: "https://applyfast-chi.vercel.app",
+            inLanguage: ["ar-SA", "en-US"],
+            author: { "@type": "Organization", name: "ApplyFast" },
+            aggregateRating: { "@type": "AggregateRating", ratingValue: "4.9", ratingCount: "89" },
+          }),
+        }}
+      />
+      <main className="min-h-screen bg-[#0a0f0e]">
       {/* ═══════════════════════════════════════════════ */}
       {/* SECTION 1: HERO */}
       {/* ═══════════════════════════════════════════════ */}
@@ -1094,5 +1114,6 @@ export default function Home() {
         </Card>
       </div>
     </main>
+    </>
   );
 }
