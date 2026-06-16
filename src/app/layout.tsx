@@ -14,44 +14,38 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ApplyFast AI — Auto-Fill Job Applications in Seconds",
+  title: "ApplyFast — AI Job Application Assistant for Saudi & Gulf",
   description:
-    "Paste your CV and job link. AI fills every application field instantly — Workday, Greenhouse, Lever, all ATS. Save 30+ minutes per application. 3 free per day.",
+    "Paste your CV and job link. AI fills every application field with Gulf-market ATS optimization, bilingual Arabic/English output, and Saudi-specific keyword analysis. 3 free per day.",
   keywords: [
-    "job application",
-    "AI fill application",
+    "job application Saudi",
+    "تعبئة طلب التوظيف",
+    "سيرة ذاتية ذكاء اصطناعي",
+    "وظائف السعودية",
     "auto fill job form",
     "resume to application",
     "CV filler",
     "Workday auto fill",
-    "Greenhouse application",
-    "Lever job app",
-    "job search AI",
+    "Gulf job market",
+    "Vision 2030 jobs",
+    "Nitaqat",
+    "ATS Gulf",
     "apply to jobs fast",
   ],
   authors: [{ name: "ApplyFast" }],
   openGraph: {
-    title: "ApplyFast AI — Auto-Fill Job Applications Instantly",
+    title: "ApplyFast — AI Job Application Assistant for Saudi & Gulf",
     description:
-      "Paste your CV + job link. Get every application field filled by AI. Free 3/day.",
+      "Paste your CV + job link. Get every application field filled by AI with Gulf-market ATS optimization. Bilingual Arabic/English. Free 3/day.",
     url: "https://applyfast-chi.vercel.app",
-    siteName: "ApplyFast AI",
+    siteName: "ApplyFast",
     type: "website",
-    images: [
-      {
-        url: "https://applyfast-chi.vercel.app/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "ApplyFast AI — Auto-Fill Job Applications",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ApplyFast AI — Auto-Fill Job Applications",
+    title: "ApplyFast — AI Job Application Assistant for Saudi & Gulf",
     description:
-      "Paste CV + job link → AI fills everything. 30 mins saved per app.",
-    images: ["https://applyfast-chi.vercel.app/og-image.png"],
+      "Paste CV + job link → AI fills everything with Gulf-market ATS optimization. Free 3/day.",
   },
   robots: {
     index: true,
@@ -73,7 +67,21 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
       <head>
-        {/* Analytics - simple inline tracker until we add proper analytics */}
+        {/* RTL locale detection script — runs before paint to avoid flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                var stored = localStorage.getItem('applyfast_locale');
+                var loc = stored === 'ar' ? 'ar' : (stored === 'en' ? 'en' : (navigator.language||'').startsWith('ar') ? 'ar' : 'en');
+                document.documentElement.dir = loc === 'ar' ? 'rtl' : 'ltr';
+                document.documentElement.lang = loc;
+                if (!stored) localStorage.setItem('applyfast_locale', loc);
+              })();
+            `,
+          }}
+        />
+        {/* Analytics */}
         <script
           dangerouslySetInnerHTML={{
             __html: `

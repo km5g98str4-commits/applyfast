@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { redis, CREDIT_PACKS, getCreditsKey } from "@/lib/redis";
+import { getRedis, CREDIT_PACKS, getCreditsKey } from "@/lib/redis";
 
 export const runtime = "nodejs"; // crypto.timingSafeEqual requires Node.js
 
@@ -73,20 +73,27 @@ export async function POST(req: NextRequest) {
 
       // Duplicate webhook guard: mark as processed
       const processedKey = `webhook:processed:${eventName}:${licenseData?.id || licenseKey}`;
-      const alreadyProcessed = await redis.get<number>(processedKey);
-      if (alreadyProcessed) {
-        console.log(`Duplicate ${eventName} for key ${licenseKey.slice(0, 8)}..., skipping`);
-        return NextResponse.json({ received: true, skipped: "duplicate" });
+      const r = getRedis();
+      if (r) {
+        const alreadyProcessed = await r.get<number>(processedKey);
+        if (alreadyProcessed) {
+          console.log(`Duplicate ${eventName} for key ${licenseKey.slice(0, 8)}..., skipping`);
+          return NextResponse.json({ received: true, skipped: "duplicate" });
+        }
       }
 
       const pack = CREDIT_PACKS[variantId];
       const credits = pack?.credits ?? 1; // Default to 1 if variant unknown
 
       // Atomically seed credits + mark processed (30-day TTL on dedup)
-      await Promise.all([
-        redis.set(getCreditsKey(licenseKey), credits),
-        redis.set(processedKey, 1, { ex: 2592000 }),
-      ]);
+      if (r) {
+        await Promise.all([
+          r.set(getCreditsKey(licenseKey), credits),
+          r.set(processedKey, 1, { ex: 2592000 }),
+        ]);
+      } else {
+        console.warn(`Redis not configured — skipping credit grant for ${licenseKey.slice(0, 8)}...`);
+      }
       console.log(
         `Credits granted: ${credits} for key ${licenseKey.slice(0, 8)}... (variant ${variantId})`
       );

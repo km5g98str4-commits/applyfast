@@ -317,3 +317,25 @@
     -moz-osx-font-smoothing: grayscale;
   }
 }
+
+/* RTL support for Arabic */
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="rtl"] .ltr-only {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Arabic font stack */
+[lang="ar"] body,
+[lang="ar"] .arabic-text {
+  font-family: 'Noto Naskh Arabic', 'Scheherazade New', 'Tajawal', 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Fix icon alignment in RTL */
+[dir="rtl"] .rtl-mirror {
+  transform: scaleX(-1);
+}

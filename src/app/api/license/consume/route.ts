@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { redis, getCreditsKey, getDailyKey } from "@/lib/redis";
+import { getRedis, getCreditsKey, getDailyKey } from "@/lib/redis";
 
 export const runtime = "edge";
+
+const isDemoMode = !process.env.UPSTASH_REDIS_REST_URL;
 
 /**
  * POST /api/license/consume
@@ -10,16 +12,37 @@ export const runtime = "edge";
  *
  * Body: { license_key?: string }
  * If no license_key provided, uses daily free tier (3 per day per IP).
+ *
+ * Demo mode: always allows (no Redis required).
  */
 export async function POST(req: NextRequest) {
   try {
     const { license_key } = await req.json();
     const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
 
+    // 🧪 DEMO MODE — always allow, no limits
+    if (isDemoMode) {
+      return NextResponse.json({
+        allowed: true,
+        remaining: 999,
+        freeLimit: 999,
+        used: 0,
+        demo: true,
+      });
+    }
+
+    const r = getRedis();
+    if (!r) {
+      return NextResponse.json(
+        { allowed: false, remaining: 0, message: "Service temporarily unavailable — Redis is not configured." },
+        { status: 503 }
+      );
+    }
+
     // Free tier: IP-based, 3 per day
     if (!license_key) {
       const dailyKey = getDailyKey(`ip:${ip}`);
-      const used = await redis.get<number>(dailyKey);
+      const used = await r.get<number>(dailyKey);
 
       if (used !== null && used >= 3) {
         return NextResponse.json({
@@ -32,12 +55,10 @@ export async function POST(req: NextRequest) {
 
       // Increment and set TTL (expire at end of day UTC)
       const next = (used ?? 0) + 1;
-      await redis.set(dailyKey, next, { ex: 86400 });
-      // Auto-expire at end of day: calculate remaining seconds
       const now = new Date();
       const endOfDay = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
       const ttl = Math.ceil((endOfDay.getTime() - now.getTime()) / 1000);
-      await redis.expire(dailyKey, ttl);
+      await r.set(dailyKey, next, { ex: ttl });
 
       return NextResponse.json({
         allowed: true,
@@ -49,7 +70,7 @@ export async function POST(req: NextRequest) {
 
     // Licensed user: validate key exists with credits
     const creditsKey = getCreditsKey(license_key);
-    const balance = await redis.get<number>(creditsKey);
+    const balance = await r.get<number>(creditsKey);
 
     if (balance === null) {
       return NextResponse.json({
@@ -68,7 +89,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Consume 1 credit
-    const newBalance = await redis.decr(creditsKey);
+    const newBalance = await r.decr(creditsKey);
 
     return NextResponse.json({
       allowed: true,
@@ -76,7 +97,10 @@ export async function POST(req: NextRequest) {
       licensed: true,
     });
   } catch (error: any) {
-    console.error("Credit consumption error:", error);
-    return NextResponse.json({ allowed: false, error: "Server error" }, { status: 500 });
+    console.error("Credit consumption error:", error?.message || error);
+    return NextResponse.json(
+      { allowed: false, remaining: 0, message: "Service temporarily unavailable. Please try again." },
+      { status: 503 }
+    );
   }
 }

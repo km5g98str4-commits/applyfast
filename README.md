@@ -1,36 +1,161 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ApplyFast 🚀
 
-## Getting Started
+AI-powered job application toolkit for the Saudi & Gulf market. Generate tailored CVs, cover letters, ATS analysis, and interview prep — all with bilingual Arabic/English support.
 
-First, run the development server:
+## Features
+
+- **AI CV Generator** — Paste your CV + job description → get a complete optimized application
+- **ATS Check** — Analyze your CV against Gulf ATS platforms (Bayt.com, Mihnati, Naukri Gulf)
+- **Custom Interview Questions** — Culturally-appropriate questions with Arabic translations
+- **CV Extraction** — Parse CV content from uploaded files
+- **Job Description Fetcher** — Auto-fetch JD from LinkedIn/GulfTalent URLs
+- **Knowledge Bank** — Access company research and market insights
+- **Sector Templates** — Pre-built templates for 20+ Saudi/Gulf industries
+- **Bilingual** — Full Arabic/English support (Vision 2030, Saudization, Nitaqat)
+- **Credit System** — Pay-per-use via Lemon Squeezy licensing
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router, Turbopack)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **AI:** DeepSeek (primary), OpenAI (fallback)
+- **Rate Limiting:** Upstash Redis
+- **Payments:** Lemon Squeezy (licensing + credit packs)
+- **Runtime:** Edge (API routes), Node.js (webhooks)
+
+## Prerequisites
+
+- Node.js 18+
+- npm (or pnpm/yarn)
+
+## Quick Start
 
 ```bash
+# 1. Clone & install
+git clone <repo-url>
+cd applyfast
+npm install
+
+# 2. Set up environment (see Environment Variables below)
+cp .env.example .env.local
+
+# 3. Run dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# → http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Local Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run dev        # Dev server with Turbopack
+npm run build      # Production build
+npm run start      # Start production server
+npm run lint       # Run ESLint
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment Variables
 
-## Learn More
+Copy `.env.example` to `.env.local` and configure:
 
-To learn more about Next.js, take a look at the following resources:
+| Variable | Required | Description |
+|---|---|---|
+| `DEEPSEEK_API_KEY` | Yes* | DeepSeek API key for AI generation |
+| `OPENAI_API_KEY` | No | OpenAI fallback if DeepSeek fails |
+| `UPSTASH_REDIS_REST_URL` | Yes* | Upstash Redis URL for rate limiting |
+| `UPSTASH_REDIS_REST_TOKEN` | Yes* | Upstash Redis token |
+| `LEMONSQUEEZY_STORE_ID` | Yes* | Lemon Squeezy store ID |
+| `LEMONSQUEEZY_WEBHOOK_SECRET` | Yes* | Webhook HMAC secret |
+| `LEMONSQUEEZY_PRODUCT_ID` | No | Product ID for checkout |
+| `LEMONSQUEEZY_VARIANT_IDS` | No | Comma-separated variant IDs |
+| `NEXT_PUBLIC_BASE_URL` | No | Base URL (defaults to localhost) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+\* **Not required for development** — the app runs in Demo Mode when these are missing.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🧪 Demo Mode
 
-## Deploy on Vercel
+ApplyFast runs fully without any API keys. When environment variables are missing:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **AI Generation** → Returns realistic Arabic/English mock data
+- **ATS Check** → Returns sample ATS analysis with Gulf-specific recommendations
+- **Custom Questions** → Returns 7 pre-built Saudi/Gulf interview questions
+- **Rate Limiting** → Disabled (unlimited free usage)
+- **Payments** → Webhook returns placeholder responses
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+All features work end-to-end. Replace mock data with real API keys before production launch.
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── api/
+│   │   ├── ats-check/      # ATS compatibility analysis
+│   │   ├── custom-questions/ # Interview question generation
+│   │   ├── extract/         # CV text extraction
+│   │   ├── fetch-job/       # Job description fetcher
+│   │   ├── generate/        # Main CV/job analysis generator
+│   │   ├── knowledge/       # Company research
+│   │   ├── license/         # License validation + credit consumption
+│   │   ├── payment/         # Payment processing
+│   │   ├── track/           # Analytics tracking
+│   │   └── webhooks/        # Lemon Squeezy webhooks
+│   ├── before-after/        # Comparison page
+│   ├── privacy/             # Privacy policy
+│   ├── terms/               # Terms of service
+│   ├── layout.tsx
+│   └── page.tsx             # Main application page
+├── components/              # React components
+├── hooks/                   # Custom React hooks
+└── lib/                     # Shared utilities
+    ├── prompts.ts           # AI prompt templates
+    ├── redis.ts             # Redis client with fallback
+    ├── sectorTemplates.ts   # Industry templates
+    └── utils.ts             # General utilities
+```
+
+## Deployment
+
+### Vercel (Recommended)
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+```
+
+Or connect your repo at [vercel.com](https://vercel.com).
+
+Build settings:
+- **Framework:** Next.js
+- **Build Command:** `next build`
+- **Output Directory:** `.next`
+- **Install Command:** `npm install`
+
+Remember to add all environment variables in Vercel dashboard → Settings → Environment Variables.
+
+## Production Checklist
+
+- [ ] Set all environment variables in production
+- [ ] Configure Lemon Squeezy webhook URL to `https://your-domain.com/api/webhooks/lemon-squeezy`
+- [ ] Update `CREDIT_PACKS` variant IDs in `src/lib/redis.ts` to match your Lemon Squeezy products
+- [ ] Replace demo responses with real API calls (already handled — just add keys)
+- [ ] Test payment flow end-to-end
+- [ ] Enable monitoring/error tracking (Sentry, Logflare, etc.)
+
+## Known Limitations
+
+- Credit system requires Redis + Lemon Squeezy integration
+- CV extraction uses regex-based parsing (no OCR for images)
+- No authentication system (public tool)
+- No persistent user accounts or history
+
+## License
+
+Private — All rights reserved.
+
+---
+
+Built with ❤️ for the Saudi job market 🇸🇦
