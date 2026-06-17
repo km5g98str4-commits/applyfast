@@ -420,13 +420,14 @@ export default function Home() {
                 {[
                   { en: "Recruiters notice you", ar: "مسؤولو التوظيف يلاحظونك" },
                   { en: "ATS passes your app", ar: "نظام ATS يمرر طلبك" },
-                ]
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-teal-400 mt-0.5 flex-shrink-0" />More 1st round calls
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-teal-400 mt-0.5 flex-shrink-0" />Less ghosting
-                </li>
+                  { en: "More 1st round calls", ar: "مكالمات مقابلة أولى أكثر" },
+                  { en: "Less ghosting", ar: "تجاهل أقل" },
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-teal-400 mt-0.5 flex-shrink-0" />
+                    {locale === "ar" ? item.ar : item.en}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
