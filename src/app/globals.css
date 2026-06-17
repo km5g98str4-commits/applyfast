@@ -339,3 +339,74 @@
 [dir="rtl"] .rtl-mirror {
   transform: scaleX(-1);
 }
+
+/* ── RTL Layout Fixes ── */
+
+/* Flip grid columns order in RTL */
+[dir="rtl"] .grid {
+  direction: rtl;
+}
+
+/* Form input alignment */
+[dir="rtl"] input,
+[dir="rtl"] textarea {
+  text-align: right;
+}
+
+/* Button groups — keep LTR ordering for icon+text buttons */
+[dir="rtl"] .rtl-icon-flip svg {
+  transform: scaleX(-1);
+}
+
+/* Space between icon and text in RTL */
+[dir="rtl"] button svg:first-child {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+/* Fix summary/details arrow in RTL */
+[dir="rtl"] details summary svg:last-child {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+/* Fix form label alignment */
+[dir="rtl"] label {
+  text-align: right;
+}
+
+/* Fix toast positioning in RTL */
+[dir="rtl"] [data-sonner-toaster] {
+  right: auto;
+  left: 1rem;
+}
+
+/* Fix copy button placement in ApplicationPack */
+[dir="rtl"] .copy-button-wrapper {
+  left: 0.5rem;
+  right: auto;
+}
+
+/* Scrollbar styling for dark theme */
+html {
+  scrollbar-color: rgba(16, 185, 129, 0.2) transparent;
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.35);
+}

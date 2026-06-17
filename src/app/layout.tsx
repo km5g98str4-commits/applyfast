@@ -33,6 +33,10 @@ export const metadata: Metadata = {
     "apply to jobs fast",
   ],
   authors: [{ name: "ApplyFast" }],
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/logo.png",
+  },
   openGraph: {
     title: "ApplyFast — AI Job Application Assistant for Saudi & Gulf",
     description:
@@ -40,6 +44,7 @@ export const metadata: Metadata = {
     url: "https://applyfast-chi.vercel.app",
     siteName: "ApplyFast",
     type: "website",
+    images: ["/og-image.png"],
   },
   twitter: {
     card: "summary_large_image",

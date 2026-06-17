@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Copy, CheckCircle2 } from "lucide-react";
 import JobMatchScore from "./JobMatchScore";
 import CoverLetter from "./CoverLetter";
@@ -78,12 +78,63 @@ function educationString(edu: unknown): string {
 
 export default function ApplicationPack({ data, locale = "en" }: Props) {
   const [copied, setCopied] = useState<string | null>(null);
+  const [allCopied, setAllCopied] = useState(false);
 
   const copyField = (key: string, value: string) => {
     navigator.clipboard.writeText(value);
     setCopied(key);
     setTimeout(() => setCopied(null), 1500);
   };
+
+  const copyAllFields = useCallback(() => {
+    const label = (en: string, ar: string) => (locale === "ar" ? ar : en);
+    const parts: string[] = [];
+
+    // Basic info
+    BASIC_FIELDS.forEach(({ key, en, ar }) => {
+      const val = data[key];
+      const display = val != null ? String(val) : "";
+      if (!display || ["N/A", "undefined", "unknown"].includes(display)) return;
+      parts.push(`${label(en, ar)}: ${display}`);
+    });
+
+    // Education
+    const eduStr = educationString(data.education);
+    if (eduStr) parts.push(`${label("Education", "التعليم")}: ${eduStr}`);
+
+    // Skills
+    if (data.skills?.length) {
+      parts.push(`${label("Skills", "المهارات")}: ${data.skills.join(", ")}`);
+    }
+
+    // Why this role
+    const why = locale === "ar" && data.whyThisRoleAr ? data.whyThisRoleAr : data.whyThisRole;
+    if (why) parts.push(`${label("Why This Role", "لماذا هذا الدور")}: ${why}`);
+
+    // Strengths
+    const strengths = locale === "ar" && data.strengthsAr?.length ? data.strengthsAr : (data.strengths ?? []);
+    if (strengths.length) {
+      parts.push(`${label("Strengths", "نقاط القوة")}:
+${strengths.map((s) => `• ${s}`).join("\n")}`);
+    }
+
+    // Cover letter
+    if (data.coverLetterSnippet) {
+      const cvText = locale === "ar" && data.coverLetterSnippetAr ? data.coverLetterSnippetAr : data.coverLetterSnippet;
+      parts.push(`${label("Cover Letter", "رسالة تغطية")}:
+${cvText}`);
+    }
+
+    // LinkedIn
+    if (data.followUpEmail?.body) {
+      parts.push(`${label("LinkedIn Message", "رسالة لينكدإن")}:
+${data.followUpEmail.body}`);
+    }
+
+    navigator.clipboard.writeText(parts.join("\n\n---\n\n"));
+    setAllCopied(true);
+    setTimeout(() => setAllCopied(false), 2000);
+  }, [data, locale]);
 
   const matchScore = data.atsAnalysis?.matchScore ?? 0;
 
@@ -126,8 +177,23 @@ export default function ApplicationPack({ data, locale = "en" }: Props) {
 
   return (
     <div dir={locale === "ar" ? "rtl" : "ltr"} className="space-y-4">
-      {/* Download PDF */}
-      <div className="flex justify-end">
+      {/* Top Actions Bar */}
+      <div className="flex justify-end gap-3">
+        <button
+          onClick={copyAllFields}
+          className={`flex items-center gap-2 text-sm transition-all px-4 py-2 rounded-xl ${
+            allCopied
+              ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+              : "text-white/80 hover:text-white bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 hover:border-emerald-500/40"
+          }`}
+        >
+          {allCopied
+            ? <CheckCircle2 className="h-4 w-4" />
+            : <Copy className="h-4 w-4" />}
+          {allCopied
+            ? (locale === "ar" ? "تم نسخ الكل!" : "All Copied!")
+            : (locale === "ar" ? "نسخ الكل" : "Copy All Fields")}
+        </button>
         <button
           onClick={() => window.print()}
           className="flex items-center gap-2 text-sm text-white/60 hover:text-emerald-400 border border-white/10 hover:border-emerald-500/30 px-4 py-2 rounded-xl transition-colors"

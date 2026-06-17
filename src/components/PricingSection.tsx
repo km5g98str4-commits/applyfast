@@ -56,7 +56,7 @@ export default function PricingSection({ locale = "en" }: PricingSectionProps) {
       title: isAr ? "باقة 5 طلبات" : "5-Pack",
       price: "9",
       period: isAr ? "مرة وحدة" : "one-time",
-      savings: isAr ? "وفر 60% — أقل من ريالين للطلب" : "Save 60% — less than $0.50/application",
+      savings: isAr ? "وفر 40%" : "Save 40%",
       features: [
         isAr ? "كل شي في الباقة المجانية" : "Everything in Free",
         isAr ? "5 طلبات كاملة" : "5 complete applications",

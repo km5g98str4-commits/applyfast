@@ -1,166 +1,181 @@
-# 📱 ApplyFast Social Media Launch Kit
-# جاهز للنسخ واللصق — زياد بس يفتح الحسابات ويحط المحتوى
+# ApplyFast Social Media Launch Kit
+# آخر تحديث: 2026-06-17
+
+## 🎨 Brand Assets
+- **Logo:** ⚡ Emerald green (#10b981) on dark (#0a3624) — `public/logo.png`
+- **Name:** ApplyFast ⚡
+- **Tagline:** طلبات وظيفية كاملة بالذكاء الاصطناعي | AI-Powered Job Applications
+- **URL:** https://applyfast-chi.vercel.app
 
 ---
 
-## 🐦 X/Twitter Account
-**Handle:** @ApplyFastAI  
-**Name:** ApplyFast ⚡  
-**URL:** https://x.com/ApplyFastAI (pending creation)
+## 🐦 Twitter/X — @applyfast_ai
 
-### Bio
-أول أداة ذكاء اصطناعي مصممة للسوق العربي 🇸🇦
-الصق سيرتك + رابط الوظيفة → طلب متكامل في ثوانٍ
-ATS Analysis • Company Deep Dive • Interview Prep • عربي احترافي
-3 استخدامات مجانية يومياً
-👇 applyfast-chi.vercel.app
+### Bio (160 chars)
+أداة سعودية تسوي طلب الوظيفة كامل بالذكاء الاصطناعي ⚡ ارفع سيرتك + رابط الوظيفة = طلب متكامل في ثواني | AI job applications for the Arab world 🇸🇦
 
-### Header Image
-~/Downloads/Code/openclaw/skills  — use OG image (emerald/dark theme)
+### Header Copy
+⚡ ApplyFast — Your AI Job Application Co-pilot
+🚀 Paste CV → Get Complete Application in Seconds
+🎯 ATS-Optimized | Bilingual | Saudi-Made
 
-### Profile Picture
-Simple emerald lightning bolt ⚡ on dark background
+### Launch Tweet (Thread)
 
-### Pinned Tweet
-بعد ٦ شهور من البحث، لاحظت شي:
-كل أدوات التقديم على الوظائف مصممة للسوق الأمريكي.
-محد فكر يسوي أداة للسوق العربي 🇸🇦
+**Post 1/6:**
+🇸🇦 تعبت وأنت تعبي نماذج التقديم كل مرة؟
 
-فبنيت ApplyFast ⚡:
-• تنسخ سيرتك الذاتية (عربي أو إنجليزي)
-• تحط رابط الوظيفة
-• يطلع لك: طلب كامل، تحليل ATS، تحضير مقابلة، نصوص مخصصة
-• السعر: ٣ استخدامات مجانية يومياً، وبعدها ٣ دولار للطلب
+كل وظيفة تطلب: اسم، إيميل، مهارات، "ليش تبغى الشغل؟"، غلاف وظيفي… وتعيدها ٥٠ مرة.
 
-جرب مجاناً ↓
+سويت ApplyFast ⚡ عشان يحل المشكلة ذي.
+
+خلوني أوريكم كيف ↓
+
+**Post 2/6:**
+الموقع بسيط:
+
+1. ترفع سيرتك الذاتية (PDF أو DOCX، عربي أو إنجليزي)
+2. تحط رابط الوظيفة
+3. اضغط Generate
+
+ويطلع لك كل شي جاهز ✅
+
+**Post 3/6:**
+وش يطلع لك؟
+
+📄 طلب متكامل بكل الحقول
+📊 نسبة تطابق مع ATS
+✍️ غلاف وظيفي بـ ٤ أساليب
+🔍 بحث عن الشركة
+🎤 أسئلة مقابلة متوقعة
+💬 رسالة LinkedIn جاهزة
+
+**Post 4/6:**
+بالعربي الفصيح، مو ترجمة آلية 🤖
+
+أغلب أدوات التقديم مصممة للسوق الأمريكي. ApplyFast مصمم للسوق العربي والخليجي من البداية.
+
+**Post 5/6:**
+التسعير:
+🆓 ٣ استخدامات مجانية يومياً
+💳 ٩ ريال للاستخدام الواحد
+📅 ٧٩ ريال شهرياً (غير محدود)
+
+بدون اشتراك، بدون كرت ائتمان مطلوب للتجربة.
+
+**Post 6/6:**
+جربوه بنفسكم ↓
 https://applyfast-chi.vercel.app
 
-### Launch Thread (5 tweets)
+الفييدباك مهم جداً — قولوا لي وش ينقصه 🙏
 
-**Tweet 1:**
-إذا تتقدم على وظايف وتستخدم ChatGPT عشان يكتب لك cover letter... توقف ✋
-
-في أداة جديدة اسمها ApplyFast ⚡ تسوي لك كل شي مرة وحدة:
-• تحليل ATS مع نسبة تطابق
-• Cover letter بـ ٤ نغمات (مهني، كاجوال، شركات ناشئة، مؤسسي)
-• تحضير مقابلة كامل
-• عربي احترافي (مو ترجمة آلية)
-
-جرب مجاناً 👇
-
-**Tweet 2:**
-وش يفرق ApplyFast عن ChatGPT؟
-
-لما تستخدم ChatGPT تطلب منه "اكتب لي cover letter لوظيفة software engineer"
-النتيجة: نص عام يقدر ينسخه أي أحد
-
-لما تستخدم ApplyFast:
-→ يحلل سيرتك الذاتية (اسمك، خبراتك، شركاتك)
-→ يحلل الوظيفة (الراتب، حجم الشركة، الصناعة، الكلمات المفتاحية)
-→ ينتج نصوص مخصصة بذكر شركاتك السابقة与合作ك فيها
-
-الفرق؟ التخصيص.
-
-**Tweet 3:**
-أكبر خطأ يسويه الباحث عن وظيفة:
-يقدم على ١٠٠ وظيفة بنفس الـ CV
-
-ATS (نظام تتبع المتقدمين) يرفض +٩٠٪ من الطلبات العامة
-
-ApplyFast يحلل سيرتك مع متطلبات الوظيفة ويعطيك:
-✅ نسبة تطابق (مثلاً ٨٧٪)
-✅ الكلمات المفتاحية اللي تحتاج تضيفها
-✅ اقتراحات لتحسين التطابق
-
-**Tweet 4:**
-ميزة ما تلقاها في أي أداة ثانية: Company Deep Dive 🏢
-
-احنا مو بس نكتب لك cover letter
-احنا نبحث عن الشركة:
-• شنو منتجها؟
-• من منافسيها؟
-• وش وضعها الاستثماري؟
-• ثقافتها الداخلية
-
-ونربط هالمعلومات بخبراتك
-= طلب يخلي HR يوقف ويقرأ
-
-**Tweet 5:**
-النسخة المجانية من ApplyFast تعطيك:
-✅ ٣ استخدامات يومياً
-✅ كل المزايا (ATS، تحليل، cover letter، مقابلة)
-✅ دعم عربي كامل
-
-مو محتاج بطاقة ائتمان. مو محتاج تسجيل.
-فقط جرب: https://applyfast-chi.vercel.app
+#الذكاء_الاصطناعي #وظائف #توظيف #السعودية
 
 ---
 
-## 💼 LinkedIn Page
-**Name:** ApplyFast  
-**URL:** https://linkedin.com/company/applyfast-ai (pending)
+## 📸 Instagram / Threads — @applyfast.ai
 
-### Tagline
-AI-powered job applications, built for the Arab world 🇸🇦
+### Bio
+⚡ طلبات وظيفية كاملة بضغطة زر
+🇸🇪 صنع في السعودية
+🔗 https://applyfast-chi.vercel.app
 
-### About
-ApplyFast is the first AI job application tool designed specifically for the MENA job market. Paste your CV and a job link — get a complete, ATS-optimized application in seconds.
+### First Post (Visual: phone mockup showing result page)
+**Caption:**
+Adnan sent 127 job applications last month.
 
-Unlike generic ChatGPT output, ApplyFast delivers:
-• Company-specific personalization
-• ATS keyword matching with match score
-• Company Deep Dive research
-• Interview preparation
-• Professional Arabic output (not machine translation)
-• 4 tone variants (Professional, Casual, Startup, Corporate)
+He spent 15 minutes on each one.
 
-3 free uses per day. No credit card required.
+That's 31 hours just filling forms. 😳
 
-### First Post
-We launched ApplyFast to solve one problem:
+With ApplyFast ⚡: 30 seconds per application.
 
-Generic AI-generated job applications that get rejected by ATS systems.
+Same quality. Better customization. Arabic + English.
 
-After testing hundreds of applications with free ChatGPT, we found the output was:
-❌ Not personalized to the company
-❌ Missing key ATS keywords
-❌ Sounding robotic
-❌ No company research
-
-ApplyFast fixes all of this. And it's free to try.
-
-Try it: https://applyfast-chi.vercel.app
+3 free daily. Try it ↓
 
 ---
 
-## 🎯 Reddit Launch Posts (Updated)
-File: REDDIT-LAUNCH.md already exists with 3 posts
+## 💼 LinkedIn — Company Page: ApplyFast AI
+
+### Company Tagline
+AI-powered job application copilot for the MENA region ⚡
+
+### Launch Post
+**Title:** We built ApplyFast because job applications shouldn't take 30 minutes each
+
+**Body:**
+After watching friends and family spend hours copy-pasting the same information into dozens of job portals, we built ApplyFast.
+
+ApplyFast is an AI-powered application generator built specifically for the Arab world. It works in Arabic and English, reads your CV, analyzes the job posting, and generates a complete, personalized application — including:
+✅ Auto-filled application fields
+✅ ATS match score with keyword gaps
+✅ Cover letter in 4 professional tones
+✅ Company deep-dive research
+✅ Interview preparation questions
+
+**Built in Saudi Arabia for the regional market.** Existing AI job tools target the U.S. market and don't understand Bayt.com, NaukriGulf, or Arabic job descriptions.
+
+**Free to try:** 3 applications daily, no credit card needed.
+https://applyfast-chi.vercel.app
+
+We'd love your feedback. What's the most painful part of job applications for you?
 
 ---
 
-## 📋 Posting Schedule (Today)
-| Time | Platform | Content |
-|------|----------|---------|
-| 09:00 | X/Twitter | Tweet 1 (launch announcement) |
-| 09:30 | LinkedIn | First Post |
-| 10:00 | Reddit r/SaudiArabia | Post 1 |
-| 11:00 | X/Twitter | Tweet 2 (vs ChatGPT) |
-| 13:00 | Reddit r/forhire | Post 2 |
-| 14:00 | X/Twitter | Tweet 3 (ATS explainer) |
-| 16:00 | Reddit r/cscareerquestions | Post 3 |
-| 17:00 | X/Twitter | Tweet 4 (Company Deep Dive) |
-| 19:00 | X/Twitter | Tweet 5 (free tier) |
-| 20:00 | LinkedIn | Second Post (customer story) |
+## 🏷️ Haraj.com (Saudi classifieds)
 
-## ⚠️ Required From Ziyad
-1. Create @ApplyFastAI on X/Twitter (needs phone number)
-2. Create LinkedIn Company Page for ApplyFast
-3. Upload profile pictures (use OG image)
-4. Copy-paste the content above
-5. Post on schedule
+### Post Title
+أداة ذكاء اصطناعي تسوي طلب الوظيفة كامل — جرب مجاناً ⚡
+
+### Body
+السلام عليكم
+
+سويت موقع اسمه ApplyFast يساعدك تقدم على الوظائف بسرعة.
+
+بدل ما تقعد ٢٠-٣٠ دقيقة تعبي بياناتك في كل وظيفة، الموقع يسويها لك في ثواني.
+
+**كيف يشتغل؟**
+- ترفع سيرتك الذاتية (عربي أو إنجليزي)
+- تحط رابط الوظيفة
+- يطلع لك الطلب كامل + غلاف وظيفي + أسئلة مقابلة
+
+**الأسعار:**
+- ٣ استخدامات مجانية كل يوم 🆓
+- ٩ ريال للاستخدام الواحد
+- ٧٩ ريال شهرياً للاستخدام اللامحدود
+
+جرب مجاناً من هنا ↓
+https://applyfast-chi.vercel.app
+
+أي سؤال أنا موجود 👍
 
 ---
 
-## 🎨 Profile Picture Concept
-Dark emerald background (#0a3624) with ⚡ emoji centered in white/emerald glow
-Size: 400x400px for Twitter, 300x300px for LinkedIn
+## 📱 WhatsApp Status / Groups
+
+### Short promo (for group sharing)
+⚡ **ApplyFast** — أداة ذكاء اصطناعي تسوي طلب الوظيفة كامل في ثواني
+ارفع CV + رابط الوظيفة = طلب متكامل + غلاف + مقابلة
+
+🆓 ٣ استخدامات مجانية
+🔗 https://applyfast-chi.vercel.app
+
+---
+
+## 🔴 Reddit — Full launch plan
+See `/Users/ziyad/projects/applyfast/REDDIT-LAUNCH.md` — 7 subreddits ranked by priority, 7 unique posts, 3-day posting schedule.
+
+---
+
+## ✅ Checklist: What Ziyad Needs to Do
+
+- [ ] Create Twitter/X account: @applyfast_ai (or available handle)
+- [ ] Create Instagram/Threads: @applyfast.ai
+- [ ] Create LinkedIn company page: ApplyFast AI
+- [ ] Set profile pictures to ⚡ logo (public/logo.png)
+- [ ] Post 6-tweet thread on X
+- [ ] Post on LinkedIn
+- [ ] Post on Haraj.com
+- [ ] Post on Reddit (see REDDIT-LAUNCH.md schedule)
+- [ ] Share in WhatsApp groups
+- [ ] Engage with all comments/replies within 2 hours

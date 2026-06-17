@@ -29,10 +29,10 @@ export function getRedis(): Redis | null {
 export const redis: Redis | null = getRedis();
 
 // Credit pack definitions (variant_id → credits)
+// Live variant IDs from Lemon Squeezy
 export const CREDIT_PACKS: Record<string, { name: string; credits: number }> = {
-  // You MUST update these variant IDs after creating products in Lemon Squeezy
-  "default": { name: "1 Application", credits: 1 }, // $3 pack
-  "variant_5": { name: "5 Applications", credits: 5 }, // $9 pack
+  "1745058": { name: "5 Applications", credits: 5 }, // SAR 9 one-time
+  "1801889": { name: "Monthly Unlimited", credits: 999 }, // SAR 79/month
 };
 
 export function getCreditsKey(licenseKey: string): string {

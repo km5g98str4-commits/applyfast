@@ -185,17 +185,28 @@ export default function Home() {
             name: "ApplyFast",
             applicationCategory: "BusinessApplication",
             operatingSystem: "Web",
-            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+            offers: { "@type": "Offer", price: "0", priceCurrency: "SAR" },
             description:
-              "AI-powered job application generator. Paste a job URL, upload your CV, and get a tailored application in 30 seconds.",
+              "AI-powered job application generator for the Saudi and Gulf market. Bilingual Arabic/English, ATS-optimized, fills cover letters, custom questions, LinkedIn messages, and interview prep.",
             url: "https://applyfast-chi.vercel.app",
             inLanguage: ["ar-SA", "en-US"],
             author: { "@type": "Organization", name: "ApplyFast" },
-            aggregateRating: { "@type": "AggregateRating", ratingValue: "4.9", ratingCount: "89" },
           }),
         }}
       />
       <main className="min-h-screen bg-[#0a0f0e]">
+      {/* Floating skip-to-form button — always visible */}
+      <div className="fixed bottom-6 right-6 z-50 animate-fade-in-up" dir="ltr">
+        <Button
+          onClick={() =>
+            document.getElementById("form-anchor")?.scrollIntoView({ behavior: "smooth" })
+          }
+          className="bg-emerald-500 hover:bg-emerald-400 text-[#0a0f0e] font-semibold px-5 py-3 rounded-xl shadow-lg shadow-emerald-500/30 transition-all hover:-translate-y-0.5"
+        >
+          <Zap className="h-4 w-4 mr-2" />
+          {locale === 'ar' ? 'ابدأ التقديم' : 'Start Building'}
+        </Button>
+      </div>
       {/* ═══════════════════════════════════════════════ */}
       {/* SECTION 1: HERO */}
       {/* ═══════════════════════════════════════════════ */}
@@ -208,24 +219,59 @@ export default function Home() {
 
         <div className="max-w-5xl mx-auto px-4 text-center relative z-10">
           {/* Badge */}
-          <div className="animate-fade-in-up inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-card border-emerald-500/20 text-emerald-400 text-sm mb-8">
+          <div className="animate-fade-in-up inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-card border-emerald-500/20 text-emerald-400 text-sm mb-6">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>AI-Powered Application Assistant</span>
+            <span>{locale === "ar" ? "مساعد تقديم ذكي للوظائف — مصمم للسوق السعودي والخليجي 🇸🇦" : "AI Job Application Copilot — Built for Saudi & Gulf 🇸🇦"}</span>
           </div>
+          {/* Anti-ChatGPT differentiator */}
+          <p className="animate-fade-in-up delay-50 text-xs text-white/30 mb-8 max-w-xl mx-auto leading-relaxed">
+            {locale === "ar"
+              ? "ليس مجرد ChatGPT. يقرأ سيرتك الذاتية، يحلل متطلبات الوظيفة، يملأ كل حقل بدقة — غلاف وظيفي، أسئلة مخصصة، رسالة LinkedIn، تحضير مقابلة. كله بالعربي والإنجليزي."
+              : "Not ChatGPT. Reads your CV, analyzes the job, fills every field. Cover letter, custom questions, LinkedIn message, interview prep — all in Arabic & English."}
+          </p>
 
           {/* Headline */}
           <h1 className="animate-fade-in-up delay-100 text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.08]">
-            <span className="text-white">Your CV + Job Link</span>
-            <br />
-            <span className="text-gradient-hero">= Tailored Application</span>
+            {locale === "ar" ? (
+              <>
+                <span className="text-white">سيرتك الذاتية + رابط الوظيفة</span>
+                <br />
+                <span className="text-gradient-hero">= تقديم مخصص واحترافي</span>
+              </>
+            ) : (
+              <>
+                <span className="text-white">Fill Every Job Application</span>
+                <br />
+                <span className="text-gradient-hero">in 30 Seconds</span>
+              </>
+            )}
           </h1>
 
           {/* Subheadline */}
           <p className="animate-fade-in-up delay-200 text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-6 leading-relaxed">
-            Stop copy-pasting generic answers. ApplyFast reads your CV, analyzes the job,
-            and fills every field with precision — saving you{" "}
-            <span className="text-emerald-400 font-semibold">30+ minutes per application</span>.
+            {locale === "ar"
+              ? "لا تنسخ وتلصق إجابات عامة. اقرأ سيرتك الذاتية، ويحلّل الوظيفة، ويملأ كل الحقول بدقة — مما يوفر عليك "
+              : "Stop copy-pasting generic answers. ApplyFast reads your CV, analyzes the job, and fills every field with precision \u2014 saving you "}
+            <span className="text-emerald-400 font-semibold">
+              {locale === "ar" ? "+٣٠ دقيقة لكل تقديم" : "30+ minutes per application"}
+            </span>
+            {locale === "ar" ? "." : "."}
           </p>
+
+          {/* Quick value props — what gets generated */}
+          <div className="animate-fade-in-up delay-250 flex flex-wrap items-center justify-center gap-2 mb-8">
+            {[
+              locale === "ar" ? "رسالة تغطية" : "Cover Letter",
+              locale === "ar" ? "إجابات الأسئلة المخصصة" : "Custom Questions",
+              locale === "ar" ? "رسالة لينكدإن" : "LinkedIn Message",
+              locale === "ar" ? "تحضير المقابلة" : "Interview Prep",
+            ].map((label, i) => (
+              <span key={i} className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-white/50">
+                <CheckCircle2 className="h-3 w-3 text-emerald-400" />
+                {label}
+              </span>
+            ))}
+          </div>
 
           {/* Trust badges */}
           <div className="animate-fade-in-up delay-300 flex items-center justify-center gap-6 mb-8 text-xs text-white/40">
@@ -248,7 +294,7 @@ export default function Home() {
               }
               className="bg-emerald-500 hover:bg-emerald-400 text-[#0a0f0e] font-semibold px-8 py-6 text-base rounded-xl shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/40 hover:-translate-y-0.5"
             >
-              <Zap className="h-4 w-4 mr-2" />Try Free Now
+              <Zap className="h-4 w-4 mr-2" />{locale === 'ar' ? 'ابدأ مجاناً' : 'Generate My Application'}
             </Button>
             <Button
               onClick={() => {
@@ -264,16 +310,16 @@ export default function Home() {
               variant="outline"
               className="border-white/10 bg-white/5 backdrop-blur-xl text-white hover:bg-white/10 hover:border-emerald-500/30 px-8 py-6 text-base rounded-xl transition-all"
             >
-              <Sparkles className="h-4 w-4 mr-2" />See Demo
+              <Sparkles className="h-4 w-4 mr-2" />{locale === 'ar' ? 'جرب العرض التجريبي' : 'Try Demo First'}
             </Button>
           </div>
 
           {/* Mini stats */}
           <div className="animate-fade-in-up delay-500 grid grid-cols-3 gap-4 max-w-md mx-auto mt-14">
             {[
-              { value: "30+", label: "Minutes Saved" },
-              { value: "3 Free", label: "Per Day" },
-              { value: "100%", label: "ATS Compatible" },
+              { value: locale === "ar" ? "+٣٠" : "30+", label: locale === "ar" ? "دقيقة موفرة" : "Minutes Saved" },
+              { value: locale === "ar" ? "٣ مجاناً" : "3 Free", label: locale === "ar" ? "كل يوم" : "Every Day" },
+              { value: locale === "ar" ? "١٠٠٪" : "100%", label: locale === "ar" ? "متوافقة مع ATS" : "ATS Compatible" },
             ].map((stat, i) => (
               <div key={i} className="text-center">
                 <p className="text-2xl font-bold text-white">{stat.value}</p>
@@ -291,11 +337,17 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Stop Getting Rejected for{" "}
-              <span className="text-gradient">Generic Applications</span>
+              {locale === "ar" ? (
+                <>توقف عن الرفض بسبب <span className="text-gradient">التقديمات العامة</span></>
+              ) : (
+                <>Stop Getting Rejected for{" "}
+              <span className="text-gradient">Generic Applications</span></>
+              )}
             </h2>
             <p className="text-white/50 max-w-xl mx-auto">
-              Recruiters can spot a ChatGPT application in seconds. Here&apos;s why ApplyFast gets you interviews.
+              {locale === "ar"
+                ? "مسؤولو التوظيف يميزون تقديم ChatGPT في ثوانٍ. لهذا ApplyFast يجلب لك المقابلات."
+                : "Recruiters can spot a ChatGPT application in seconds. Here's why ApplyFast gets you interviews."}
             </p>
           </div>
 
@@ -305,49 +357,51 @@ export default function Home() {
               <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center mb-4">
                 <X className="h-5 w-5 text-red-400" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Generic ChatGPT</h3>
-              <p className="text-sm text-white/40 mb-4">Copy-paste the JD into ChatGPT and pray.</p>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                {locale === "ar" ? "ChatGPT العام" : "Generic ChatGPT"}
+              </h3>
+              <p className="text-sm text-white/40 mb-4">
+                {locale === "ar" ? "انسخ وألصق الوصف الوظيفي في ChatGPT وادعُ." : "Copy-paste the JD into ChatGPT and pray."}
+              </p>
               <ul className="space-y-2 text-sm text-white/50">
-                <li className="flex items-start gap-2">
-                  <X className="h-3.5 w-3.5 text-red-400 mt-0.5 flex-shrink-0" />Sounds robotic
-                </li>
-                <li className="flex items-start gap-2">
-                  <X className="h-3.5 w-3.5 text-red-400 mt-0.5 flex-shrink-0" />No ATS keywords
-                </li>
-                <li className="flex items-start gap-2">
-                  <X className="h-3.5 w-3.5 text-red-400 mt-0.5 flex-shrink-0" />Fails screening
-                </li>
-                <li className="flex items-start gap-2">
-                  <X className="h-3.5 w-3.5 text-red-400 mt-0.5 flex-shrink-0" />Generic answers
-                </li>
+                {[
+                  { en: "Sounds robotic", ar: "صوته آلي" },
+                  { en: "No ATS keywords", ar: "بدون كلمات ATS" },
+                  { en: "Fails screening", ar: "يفشل في الفلترة" },
+                  { en: "Generic answers", ar: "إجابات عامة" },
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <X className="h-3.5 w-3.5 text-red-400 mt-0.5 flex-shrink-0" />
+                    {locale === "ar" ? item.ar : item.en}
+                  </li>
+                ))}
               </ul>
             </div>
 
             {/* ApplyFast - highlighted */}
             <div className="glass-card rounded-2xl p-6 border-emerald-500/30 relative overflow-hidden scale-[1.03]">
               <div className="absolute top-0 right-0 bg-emerald-500 text-[#0a0f0e] text-xs font-bold px-3 py-1 rounded-bl-xl">
-                BEST
+                {locale === "ar" ? "الأفضل" : "BEST"}
               </div>
               <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-4">
                 <Sparkles className="h-5 w-5 text-emerald-400" />
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">ApplyFast AI</h3>
               <p className="text-sm text-white/50 mb-4">
-                CV + JD → every field, personalized and ATS-optimized.
+                {locale === "ar" ? "سيرة ذاتية + وصف وظيفي → كل الحقول، مخصصة ومتوافقة مع ATS." : "CV + JD → every field, personalized and ATS-optimized."}
               </p>
               <ul className="space-y-2 text-sm text-white/70">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 mt-0.5 flex-shrink-0" />Matches CV to JD
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 mt-0.5 flex-shrink-0" />ATS keyword scan
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 mt-0.5 flex-shrink-0" />Personalized tone
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 mt-0.5 flex-shrink-0" />Interview prep included
-                </li>
+                {[
+                  { en: "Matches CV to JD", ar: "يطابق السيرة مع الوظيفة" },
+                  { en: "ATS keyword scan", ar: "مسح كلمات ATS" },
+                  { en: "Personalized tone", ar: "نغمة مخصصة" },
+                  { en: "Interview prep included", ar: "تحضير مقابلة مضمّن" },
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                    {locale === "ar" ? item.ar : item.en}
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -356,15 +410,17 @@ export default function Home() {
               <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center mb-4">
                 <Target className="h-5 w-5 text-teal-400" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Interview Calls</h3>
-              <p className="text-sm text-white/40 mb-4">Stand out from hundreds of applicants.</p>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                {locale === "ar" ? "مقابلات عمل" : "Interview Calls"}
+              </h3>
+              <p className="text-sm text-white/40 mb-4">
+                {locale === "ar" ? "تميز عن مئات المتقدمين." : "Stand out from hundreds of applicants."}
+              </p>
               <ul className="space-y-2 text-sm text-white/50">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-teal-400 mt-0.5 flex-shrink-0" />Recruiters notice you
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-teal-400 mt-0.5 flex-shrink-0" />ATS passes your app
-                </li>
+                {[
+                  { en: "Recruiters notice you", ar: "مسؤولو التوظيف يلاحظونك" },
+                  { en: "ATS passes your app", ar: "نظام ATS يمرر طلبك" },
+                ]
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-teal-400 mt-0.5 flex-shrink-0" />More 1st round calls
                 </li>
@@ -455,10 +511,16 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              How It <span className="text-gradient">Works</span>
+              {locale === 'ar' ? (
+                <>كيف <span className="text-gradient">يعمل؟</span></>
+              ) : (
+                <>How It <span className="text-gradient">Works</span></>
+              )}
             </h2>
             <p className="text-white/50 max-w-xl mx-auto">
-              Three simple steps. No signup. No credit card.
+              {locale === 'ar'
+                ? 'ثلاث خطوات بسيطة. بدون تسجيل. بدون بطاقة ائتمان.'
+                : 'Three simple steps. No signup. No credit card.'}
             </p>
           </div>
 
@@ -467,20 +529,26 @@ export default function Home() {
               {
                 step: "01",
                 icon: FileText,
-                title: "Paste Your CV",
-                desc: "Drop in your resume or LinkedIn profile. We parse everything — skills, experience, education, achievements.",
+                title: locale === 'ar' ? 'ألصق سيرتك الذاتية' : 'Paste Your CV',
+                desc: locale === 'ar'
+                  ? 'ضع سيرتك الذاتية أو ملفك على لينكدإن. نحلل كل شيء — المهارات، الخبرات، التعليم، الإنجازات.'
+                  : 'Drop in your resume or LinkedIn profile. We parse everything — skills, experience, education, achievements.',
               },
               {
                 step: "02",
                 icon: Link,
-                title: "Add Job Link",
-                desc: "Paste any job URL or description. We analyze the role, company, requirements, and ATS keywords.",
+                title: locale === 'ar' ? 'أضف رابط الوظيفة' : 'Add Job Link',
+                desc: locale === 'ar'
+                  ? 'ألصق أي رابط وظيفة أو وصف. نحلل الدور، الشركة، المتطلبات، والكلمات المفتاحية لنظام ATS.'
+                  : 'Paste any job URL or description. We analyze the role, company, requirements, and ATS keywords.',
               },
               {
                 step: "03",
                 icon: SendHorizonal,
-                title: "Get Every Field",
-                desc: "AI fills in every application field. Copy-paste into Workday, Greenhouse, Lever — any ATS.",
+                title: locale === 'ar' ? 'احصل على كل الحقول' : 'Get Every Field',
+                desc: locale === 'ar'
+                  ? 'الذكاء الاصطناعي يملأ كل حقل في التقديم. انسخ وألصق في Workday أو Greenhouse أو Lever — أي منصة.'
+                  : 'AI fills in every application field. Copy-paste into Workday, Greenhouse, Lever — any ATS.',
               },
             ].map((item, i) => {
               const IconComp = item.icon;
@@ -575,15 +643,15 @@ export default function Home() {
           {/* Trust badges */}
           <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-xs text-white/30">
             {[
-              "No CV stored",
-              "No account required",
-              "Arabic & English",
-              "PDPL compliant",
-              "Halal & ethical",
+              { label: "No CV stored", ar: "لا نحفظ السيرة الذاتية" },
+              { label: "No account required", ar: "لا حساب مطلوب" },
+              { label: "Arabic & English", ar: "عربي وإنجليزي" },
+              { label: "PDPL compliant", ar: "متوافق مع PDPL" },
+              { label: "Halal & ethical — no interest, honest AI", ar: "حلال وأخلاقي — لا ربا، ذكاء اصطناعي صادق" },
             ].map((badge, i) => (
-              <span key={i} className="flex items-center gap-1.5">
+              <span key={i} className="flex items-center gap-1.5" title={badge.label}>
                 <CheckCircle2 className="h-3 w-3 text-emerald-400" />
-                {badge}
+                {locale === "ar" && badge.ar ? badge.ar : badge.label}
               </span>
             ))}
           </div>
@@ -597,20 +665,30 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              What Makes Us <span className="text-gradient">Different</span>
+              {locale === "ar" ? (
+                <>ما يميزنا عن <span className="text-gradient">البقية</span></>
+              ) : (
+                <>What Makes Us <span className="text-gradient">Different</span></>
+              )}
             </h2>
             <p className="text-white/50 max-w-xl mx-auto">
-              ChatGPT is generic. ApplyFast is built for one thing: getting you hired.
+              {locale === "ar"
+                ? "ChatGPT غير متخصص. ApplyFast مبني لشيء واحد: حصولك على الوظيفة."
+                : "ChatGPT is generic. ApplyFast is built for one thing: getting you hired."}
             </p>
           </div>
 
           <div className="glass-card rounded-2xl overflow-hidden">
             <div className="grid grid-cols-3 border-b border-white/5">
               <div className="p-5">
-                <p className="text-xs text-white/30 uppercase tracking-wider font-semibold">Feature</p>
+                <p className="text-xs text-white/30 uppercase tracking-wider font-semibold">
+                  {locale === "ar" ? "الميزة" : "Feature"}
+                </p>
               </div>
               <div className="p-5 text-center">
-                <p className="text-xs text-white/30 uppercase tracking-wider font-semibold">ChatGPT Free</p>
+                <p className="text-xs text-white/30 uppercase tracking-wider font-semibold">
+                  {locale === "ar" ? "ChatGPT مجاني" : "ChatGPT Free"}
+                </p>
               </div>
               <div className="p-5 text-center bg-emerald-500/[0.04]">
                 <p className="text-xs text-emerald-400 uppercase tracking-wider font-semibold">ApplyFast</p>
@@ -618,17 +696,19 @@ export default function Home() {
             </div>
 
             {[
-              "ATS Score Analysis",
-              "Company Deep Research",
-              "Sniper Bullets",
-              "Arabic Support",
-              "4 Output Tones",
-              "Interview Prep",
-              "Experience Mapping",
-              "Multi-CV Manager",
+              { en: "ATS Score Analysis", ar: "تحليل نقاط ATS" },
+              { en: "Company Deep Research", ar: "بحث معمق عن الشركة" },
+              { en: "Sniper Bullets", ar: "نقاط سريعة تجذب" },
+              { en: "Arabic Support", ar: "دعم اللغة العربية" },
+              { en: "4 Output Tones", ar: "٤ أنماط للإخراج" },
+              { en: "Interview Prep", ar: "تحضير المقابلة" },
+              { en: "Experience Mapping", ar: "مطابقة الخبرات" },
+              { en: "Multi-CV Manager", ar: "إدارة سير متعددة" },
             ].map((feature, i) => (
               <div key={i} className={`grid grid-cols-3 ${i % 2 === 0 ? "bg-white/[0.01]" : ""}`}>
-                <div className="p-4 text-sm text-white/70">{feature}</div>
+                <div className="p-4 text-sm text-white/70">
+                  {locale === "ar" ? feature.ar : feature.en}
+                </div>
                 <div className="p-4 flex justify-center items-center">
                   <X className="h-4 w-4 text-red-400/40" />
                 </div>
@@ -648,23 +728,29 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Your Application <span className="text-gradient">Superpowers</span>
+              {locale === "ar" ? (
+                <>قدرات <span className="text-gradient">تقديمك الخارقة</span></>
+              ) : (
+                <>Your Application <span className="text-gradient">Superpowers</span></>
+              )}
             </h2>
             <p className="text-white/50 max-w-xl mx-auto">
-              Everything you need to beat the ATS and impress recruiters.
+              {locale === "ar"
+                ? "كل ما تحتاجه للتغلب على نظام ATS وإبهار مسؤولي التوظيف."
+                : "Everything you need to beat the ATS and impress recruiters."}
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { icon: Target, title: "ATS Keywords", desc: "Extract and match keywords that ATS systems scan for." },
-              { icon: Gauge, title: "Match Score", desc: "See exactly how well your CV matches the job before applying." },
-              { icon: Building2, title: "Company Deep Dive", desc: "Get company size, tech stack, funding, culture insights." },
-              { icon: ArrowRight, title: "Experience Mapper", desc: "Your experience automatically mapped to each requirement." },
-              { icon: Target, title: "Sniper Bullets", desc: "Recruiters scan in 5 seconds — make them stop and read." },
-              { icon: HelpCircle, title: "Interview Prep", desc: "Role-specific questions with hints built from your CV." },
-              { icon: Globe, title: "Arabic Support", desc: "Full bilingual output — English and Arabic, same quality." },
-              { icon: Layers, title: "Multi-CV Manager", desc: "Save multiple CVs, switch between them instantly." },
+              { icon: Target, en: "ATS Keywords", ar: "كلمات ATS المفتاحية", descEn: "Extract and match keywords that ATS systems scan for.", descAr: "استخرج وطابق الكلمات المفتاحية التي تبحث عنها أنظمة ATS." },
+              { icon: Gauge, en: "Match Score", ar: "نسبة التطابق", descEn: "See exactly how well your CV matches the job before applying.", descAr: "اعرف بالضبط مدى تطابق سيرتك الذاتية مع الوظيفة قبل التقديم." },
+              { icon: Building2, en: "Company Deep Dive", ar: "بحث معمق عن الشركة", descEn: "Get company size, tech stack, funding, culture insights.", descAr: "احصل على حجم الشركة، التقنيات، التمويل، والثقافة." },
+              { icon: ArrowRight, en: "Experience Mapper", ar: "مطابقة الخبرات", descEn: "Your experience automatically mapped to each requirement.", descAr: "خبراتك تُطابق تلقائياً مع كل متطلب." },
+              { icon: Target, en: "Sniper Bullets", ar: "نقاط سريعة", descEn: "Recruiters scan in 5 seconds — make them stop and read.", descAr: "مسؤولو التوظيف يمسحون في ٥ ثوانٍ — اجعلهم يتوقفون ويقرؤون." },
+              { icon: HelpCircle, en: "Interview Prep", ar: "تحضير المقابلة", descEn: "Role-specific questions with hints built from your CV.", descAr: "أسئلة مخصصة للدور مع تلميحات من سيرتك الذاتية." },
+              { icon: Globe, en: "Arabic Support", ar: "دعم اللغة العربية", descEn: "Full bilingual output — English and Arabic, same quality.", descAr: "إخراج ثنائي اللغة كامل — إنجليزي وعربي، نفس الجودة." },
+              { icon: Layers, en: "Multi-CV Manager", ar: "إدارة سير متعددة", descEn: "Save multiple CVs, switch between them instantly.", descAr: "احفظ سيراً ذاتية متعددة وتنقل بينها فوراً." },
             ].map((feat, i) => {
               const Icon = feat.icon;
               return (
@@ -672,8 +758,12 @@ export default function Home() {
                   <div className="w-9 h-9 rounded-lg bg-emerald-500/10 flex items-center justify-center mb-4">
                     <Icon className="h-[18px] w-[18px] text-emerald-400" />
                   </div>
-                  <h3 className="text-sm font-semibold text-white mb-2">{feat.title}</h3>
-                  <p className="text-xs text-white/40 leading-relaxed">{feat.desc}</p>
+                  <h3 className="text-sm font-semibold text-white mb-2">
+                    {locale === "ar" ? feat.ar : feat.en}
+                  </h3>
+                  <p className="text-xs text-white/40 leading-relaxed">
+                    {locale === "ar" ? feat.descAr : feat.descEn}
+                  </p>
                 </div>
               );
             })}
@@ -691,10 +781,16 @@ export default function Home() {
               <Sparkles className="h-7 w-7 text-emerald-400" />
             </div>
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-              See It In <span className="text-gradient">Action</span>
+              {locale === "ar" ? (
+                <>شاهدها <span className="text-gradient">بالفيديو</span></>
+              ) : (
+                <>See It In <span className="text-gradient">Action</span></>
+              )}
             </h2>
             <p className="text-white/50 mb-8 max-w-md mx-auto">
-              We&apos;ll prefill a real CV and job description so you can see the full output in seconds.
+              {locale === "ar"
+                ? "سنملأ سيرة ذاتية حقيقية ووصف وظيفي مسبقاً لتشاهد المخرجات الكاملة في ثوانٍ."
+                : "We'll prefill a real CV and job description so you can see the full output in seconds."}
             </p>
             <Button
               onClick={() => {
@@ -709,7 +805,8 @@ export default function Home() {
               }}
               className="bg-emerald-500 hover:bg-emerald-400 text-[#0a0f0e] font-semibold px-8 py-6 text-base rounded-xl shadow-lg shadow-emerald-500/20"
             >
-              <Sparkles className="h-4 w-4 mr-2" />Try Demo — It&apos;s Free
+              <Sparkles className="h-4 w-4 mr-2" />
+              {locale === "ar" ? "جرب العرض التجريبي — مجاناً" : "Try Demo — It's Free"}
             </Button>
           </div>
         </div>
@@ -782,7 +879,11 @@ export default function Home() {
         <div className="max-w-2xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Frequently Asked <span className="text-gradient">Questions</span>
+              {locale === "ar" ? (
+                <>أسئلة <span className="text-gradient">شائعة</span></>
+              ) : (
+                <>Frequently Asked <span className="text-gradient">Questions</span></>
+              )}
             </h2>
           </div>
 
@@ -790,35 +891,51 @@ export default function Home() {
             {[
               {
                 q: "How does ApplyFast work?",
+                qAr: "كيف يعمل ApplyFast؟",
                 a: "Paste your CV and job link (or description). Our AI reads both, extracts your info, and generates every application field — from basic info to cover letter intro and strengths. Then just copy-paste each field into any job portal.",
+                aAr: "ألصق سيرتك الذاتية ورابط الوظيفة (أو وصفها). الذكاء الاصطناعي يقرأ كلاهما، يستخرج معلوماتك، وينتج كل حقل تقديم — من المعلومات الأساسية إلى مقدمة رسالة التغطية ونقاط القوة. بعدها انسخ وألصق كل حقل في أي بوابة توظيف.",
               },
               {
                 q: "Is my CV stored or saved?",
+                qAr: "هل تُحفظ سيرتي الذاتية؟",
                 a: "No. Your CV is sent to the AI provider for processing and discarded immediately after the response is generated. We don't store, archive, log, or train on your CV data. It passes through and is gone.",
+                aAr: "لا. سيرتك الذاتية تُرسل لمزود الذكاء الاصطناعي للمعالجة وتُحذف فوراً بعد توليد الرد. لا نخزن، لا نؤرشف، لا نسجل، ولا ندرب على بيانات سيرتك الذاتية. تمر وتنتهي.",
               },
               {
                 q: "Does ApplyFast guarantee I'll get the job?",
+                qAr: "هل يضمن ApplyFast حصولي على الوظيفة؟",
                 a: "No — and anyone who promises that is being dishonest. ApplyFast creates tailored, professional applications that significantly improve your chances, but hiring decisions depend on many factors: your actual experience, the competition, the interviewer, and timing.",
+                aAr: "لا — وأي شخص يعد بذلك غير صادق. ApplyFast ينشئ تقديمات مخصصة واحترافية تحسن فرصك بشكل كبير، لكن قرارات التوظيف تعتمد على عوامل كثيرة: خبراتك الفعلية، المنافسة، الشخص الذي يجري المقابلة، والتوقيت.",
               },
               {
                 q: "Does it work in Arabic and English?",
+                qAr: "هل يعمل بالعربي والإنجليزي؟",
                 a: "Yes! ApplyFast is Arabic-first — you can paste an Arabic CV and get output in both English and Arabic. Built specifically for the Saudi and Gulf job market, with full bilingual support.",
+                aAr: "نعم! ApplyFast عربي أولاً — يمكنك لصق سيرة ذاتية بالعربي والحصول على مخرجات بالإنجليزي والعربي. مبني خصيصاً لسوق العمل السعودي والخليجي، مع دعم ثنائي اللغة كامل.",
               },
               {
                 q: "Is ApplyFast suitable for the Saudi/Gulf market?",
+                qAr: "هل ApplyFast مناسب للسوق السعودي والخليجي؟",
                 a: "Absolutely. We built ApplyFast specifically for this region. It understands Saudi companies, job titles common in the Gulf, bilingual CVs, and ATS systems used by employers here like SAP SuccessFactors, Oracle, and Bayt.com.",
+                aAr: "بالتأكيد. بنينا ApplyFast خصيصاً لهذه المنطقة. يفهم الشركات السعودية، المسميات الوظيفية الشائعة في الخليج، السير الذاتية ثنائية اللغة، وأنظمة ATS المستخدمة هنا مثل SAP SuccessFactors وOracle وبيت.كوم.",
               },
               {
                 q: "What happens if the AI fails or is slow?",
+                qAr: "ماذا يحدث إذا فشل الذكاء الاصطناعي أو كان بطيئاً؟",
                 a: "We use multiple AI providers for reliability. If the primary provider is unavailable, we automatically fall back to a backup provider. If all providers are down, we show a clear message — never a raw error. Your credits are never consumed on failed attempts.",
+                aAr: "نستخدم عدة مزودي ذكاء اصطناعي للموثوقية. إذا كان المزود الرئيسي غير متاح، ننتقل تلقائياً لمزود احتياطي. إذا تعطل الجميع، نعرض رسالة واضحة — لا نعرض أخطاء تقنية. رصيدك لا يُستهلك في المحاولات الفاشلة.",
               },
               {
                 q: "How many free applications do I get?",
-                a: "3 completely free applications per day. No signup, no credit card required. After your daily limit, it's 9 SAR for a 5-pack (60% savings) or 79 SAR/month for unlimited applications.",
+                qAr: "كم طلب مجاني أحصل عليه؟",
+                a: "3 completely free applications per day. No signup, no credit card required. After your daily limit, it's 9 SAR for a 5-pack (save 40%) or 79 SAR/month for unlimited applications.",
+                aAr: "٣ طلبات مجانية بالكامل يومياً. بدون تسجيل، بدون بطاقة ائتمانية. بعد الحد اليومي، الباقة ٩ ر.س لـ ٥ طلبات (وفر 40%) أو ٧٩ ر.س شهرياً لطلبات غير محدودة.",
               },
               {
                 q: "How do I pay?",
+                qAr: "كيف أدفع؟",
                 a: "Send the amount to our IBAN (STC Bank). Once we receive your payment, we'll email you credits. We're working on automated payment — this is a one-person project, so bear with us!",
+                aAr: "حوّل المبلغ إلى رقم الآيبان (بنك STC). بمجرد استلام دفعتك، سنرسل لك الرصيد عبر البريد الإلكتروني. نعمل على الدفع الآلي — هذا مشروع شخص واحد، فتحملونا!",
               },
               {
                 q: "Can I get a refund?",
@@ -835,11 +952,13 @@ export default function Home() {
             ].map((item, i) => (
               <details key={i} className="glass-card rounded-xl group">
                 <summary className="p-5 cursor-pointer list-none flex items-center justify-between text-white font-medium text-sm">
-                  {item.q}
+                  {locale === "ar" && item.qAr ? item.qAr : item.q}
                   <ChevronDown className="h-4 w-4 text-white/30 group-open:rotate-180 transition-transform flex-shrink-0 ml-2" />
                 </summary>
                 <div className="px-5 pb-5">
-                  <p className="text-sm text-white/50 leading-relaxed">{item.a}</p>
+                  <p className="text-sm text-white/50 leading-relaxed">
+                    {locale === "ar" && item.aAr ? item.aAr : item.a}
+                  </p>
                 </div>
               </details>
             ))}
@@ -853,8 +972,8 @@ export default function Home() {
       <footer className="border-t border-white/[0.04] py-8">
         <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-white/30">
-            &copy; {new Date().getFullYear()} ApplyFast AI &middot; Built for job seekers &middot;
-            Halal & ethical
+            &copy; {new Date().getFullYear()} ApplyFast AI · {locale === "ar" ? "مبني للباحثين عن عمل" : "Built for job seekers"} ·
+            {locale === "ar" ? "حلال وأخلاقي — لا ربا، تسعير شفاف، ذكاء اصطناعي صادق" : "Halal & ethical — no interest, transparent pricing, honest AI"}
           </p>
           <div className="flex items-center gap-6 text-xs text-white/30">
             <a href="/privacy" className="hover:text-emerald-400 transition-colors">
@@ -1012,8 +1131,30 @@ export default function Home() {
       {/* ═══════════════════════════════════════════════ */}
       {loading && (
         <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-          <Loader2 className="h-10 w-10 text-emerald-400 animate-spin mx-auto mb-4" />
-          <p className="text-white/40">Analyzing job, matching your experience, generating fields...</p>
+          <Loader2 className="h-10 w-10 text-emerald-400 animate-spin mx-auto mb-6" />
+          <p className="text-white text-lg font-semibold mb-3">
+            {locale === 'ar' ? 'جارٍ إنشاء حزمة تقديمك...' : 'Building Your Application Pack...'}
+          </p>
+          <div className="max-w-sm mx-auto space-y-3">
+            {[
+              { step: locale === 'ar' ? 'تحليل الوظيفة واستخراج الكلمات المفتاحية' : 'Analyzing job & extracting ATS keywords', status: 'active' },
+              { step: locale === 'ar' ? 'مطابقة خبراتك مع متطلبات الوظيفة' : 'Mapping your experience to job requirements', status: 'pending' },
+              { step: locale === 'ar' ? 'إنشاء رسالة تغطية وأجوبة مخصصة' : 'Crafting cover letter & custom answers', status: 'pending' },
+              { step: locale === 'ar' ? 'تحضير أسئلة المقابلة' : 'Preparing interview questions', status: 'pending' },
+            ].map((item, i) => (
+              <div key={i} className={`flex items-center gap-3 text-sm ${i === 0 ? 'text-white/60' : 'text-white/25'}`}>
+                {i === 0 ? (
+                  <Loader2 className="h-3.5 w-3.5 text-emerald-400 animate-spin flex-shrink-0" />
+                ) : (
+                  <div className="h-3.5 w-3.5 rounded-full border border-white/10 flex-shrink-0" />
+                )}
+                <span className="text-left">{item.step}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-white/20 text-xs mt-8">
+            {locale === 'ar' ? 'يستغرق عادةً ١٥-٣٠ ثانية' : 'Usually takes 15-30 seconds'}
+          </p>
         </div>
       )}
 
@@ -1035,11 +1176,17 @@ export default function Home() {
       <div id="payment" className="max-w-2xl mx-auto px-4 pb-24 pt-8 border-t border-white/[0.04]">
         <Card className="p-8 glass-card rounded-2xl text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm mb-4">
-            ⚡ Pro
+            ⚡ {locale === "ar" ? "برو" : "Pro"}
           </div>
-          <h3 className="text-2xl font-bold text-white mb-2">Unlimited Applications</h3>
-          <p className="text-white/50 mb-2">$3 per application. Pay once, use once.</p>
-          <p className="text-sm text-white/40 mb-6">Or $9 for 5 applications (save 40%)</p>
+          <h3 className="text-2xl font-bold text-white mb-2">
+            {locale === "ar" ? "طلبات غير محدودة" : "Unlimited Applications"}
+          </h3>
+          <p className="text-white/50 mb-2">
+            {locale === "ar" ? "٣ ر.س للطلب الواحد. ادفع مرة، استخدم مرة." : "SAR 3 per application. Pay once, use once."}
+          </p>
+          <p className="text-sm text-white/40 mb-6">
+            {locale === "ar" ? "أو ٩ ر.س لـ ٥ طلبات (وفر 40%)" : "Or SAR 9 for 5 applications (save 40%)"}
+          </p>
 
           <div className="space-y-3 max-w-md mx-auto">
             <a
@@ -1048,11 +1195,13 @@ export default function Home() {
             >
               <div className="flex items-center justify-between">
                 <div className="text-left">
-                  <p className="text-white font-semibold">1 Application</p>
-                  <p className="text-sm text-white/40">$3.00</p>
+                  <p className="text-white font-semibold">
+                    {locale === "ar" ? "طلب واحد" : "1 Application"}
+                  </p>
+                  <p className="text-sm text-white/40">SAR 3.00</p>
                 </div>
                 <span className="text-xs text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                  One-time
+                  {locale === "ar" ? "مرة واحدة" : "One-time"}
                 </span>
               </div>
             </a>
@@ -1062,25 +1211,29 @@ export default function Home() {
               className="lemonsqueezy-button block p-4 glass-card rounded-xl cursor-pointer hover:border-emerald-500/30 transition-colors relative overflow-hidden no-underline"
             >
               <div className="absolute top-0 right-0 bg-emerald-500 text-[#0a0f0e] text-xs font-bold px-2 py-0.5 rounded-bl-lg">
-                Best Value
+                {locale === "ar" ? "الأفضل قيمة" : "Best Value"}
               </div>
               <div className="flex items-center justify-between">
                 <div className="text-left">
-                  <p className="text-white font-semibold">5 Applications</p>
+                  <p className="text-white font-semibold">
+                    {locale === "ar" ? "٥ طلبات" : "5 Applications"}
+                  </p>
                   <p className="text-sm text-white/40">
-                    <span className="text-emerald-400 font-semibold">$9.00</span>{" "}
-                    <span className="line-through text-white/30">$15.00</span>
+                    <span className="text-emerald-400 font-semibold">SAR 9.00</span>{" "}
+                    <span className="line-through text-white/30">SAR 15.00</span>
                   </p>
                 </div>
                 <span className="text-xs text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                  Save 40%
+                  {locale === "ar" ? "وفر 40%" : "Save 40%"}
                 </span>
               </div>
             </a>
           </div>
 
           <div className="mt-8 p-4 bg-white/[0.03] rounded-xl border border-white/5">
-            <p className="text-sm text-white/40 mb-3">Already purchased? Paste your license key:</p>
+            <p className="text-sm text-white/40 mb-3">
+              {locale === "ar" ? "اشتريت مسبقاً؟ ألصق رمز الترخيص:" : "Already purchased? Paste your license key:"}
+            </p>
             <div className="flex gap-2">
               <Input
                 value={licenseKey}
@@ -1103,13 +1256,15 @@ export default function Home() {
             {licenseValid && (
               <p className="text-sm text-emerald-400 mt-2 flex items-center gap-1 justify-center">
                 <CheckCircle2 className="w-3 h-3" />
-                License active — {remaining !== null ? `${remaining} credits remaining` : "Unlimited"}
+                {locale === "ar"
+                  ? `الترخيص مفعّل — ${remaining !== null ? `${remaining} رصيد متبقي` : "غير محدود"}`
+                  : `License active — ${remaining !== null ? `${remaining} credits remaining` : "Unlimited"}`}
               </p>
             )}
           </div>
 
           <p className="text-xs text-white/25 mt-4">
-            Powered by Lemon Squeezy &middot; Secure checkout &middot; Instant delivery
+            Powered by Lemon Squeezy · Secure checkout · Instant delivery
           </p>
         </Card>
       </div>

@@ -4,7 +4,10 @@ import { getRedis, CREDIT_PACKS, getCreditsKey } from "@/lib/redis";
 export const runtime = "edge";
 
 const LS_STORE_ID = process.env.LEMONSQUEEZY_STORE_ID;
-const LS_PRODUCT_ID = process.env.LEMONSQUEEZY_PRODUCT_ID;
+const LS_PRODUCT_IDS = new Set([
+  process.env.LEMONSQUEEZY_PRODUCT_ID_5,
+  process.env.LEMONSQUEEZY_PRODUCT_ID_UNLIMITED,
+].filter(Boolean));
 const isDemoMode = !process.env.LEMONSQUEEZY_STORE_ID && !process.env.UPSTASH_REDIS_REST_URL;
 
 /**
@@ -65,8 +68,8 @@ export async function POST(req: NextRequest) {
     if (LS_STORE_ID && storeId !== LS_STORE_ID) {
       return NextResponse.json({ valid: false, error: "Key not issued by this store" }, { status: 400 });
     }
-    if (LS_PRODUCT_ID && productId !== LS_PRODUCT_ID) {
-      return NextResponse.json({ valid: false, error: "Key not for this product" }, { status: 400 });
+    if (LS_PRODUCT_IDS.size > 0 && !LS_PRODUCT_IDS.has(productId)) {
+      return NextResponse.json({ valid: false, error: "Key not for an ApplyFast product" }, { status: 400 });
     }
 
     // Look up / seed credit balance
